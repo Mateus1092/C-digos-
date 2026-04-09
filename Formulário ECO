@@ -1,0 +1,247 @@
+<style>
+:root {
+	--color-primary: #1f7a3a;
+	--color-background: #f6f8f7;
+	--color-card-bg: #ffffff;
+	--color-card-border: #e5e7eb;
+	--color-text: #1f2937;
+	--color-input-border: #d1d5db;
+
+	--radius: 14px;
+	--shadow: 0 15px 35px rgba(0,0,0,0.08);
+}
+
+/* DARK MODE */
+[data-theme="dark"] {
+	--color-background: #0b1210;
+	--color-card-bg: #0f1a15;
+	--color-card-border: #1f2a24;
+	--color-text: #ecfdf5;
+	--color-input-border: #2d3a34;
+}
+
+/* FUNDO */
+.background {
+	position: fixed;
+	inset: 0;
+	background: var(--color-background);
+	z-index: -1;
+	overflow: hidden;
+}
+
+/* BLOBS MENORES E MAIS NÍTIDOS */
+.blob {
+	position: absolute;
+	width: 35px;
+	height: 35px;
+	background: rgba(31, 122, 58, 0.9);
+	border-radius: 50%;
+	filter: blur(2px);
+	transition: transform 0.2s ease;
+	pointer-events: none;
+}
+
+/* BASE */
+body {
+	font-family: Inter, sans-serif;
+	display: flex;
+	justify-content: center;
+	padding: 60px 16px;
+	color: var(--color-text);
+}
+
+/* CARD */
+.card {
+	backdrop-filter: blur(14px);
+	background: rgba(255,255,255,0.85);
+	border: 1px solid var(--color-card-border);
+	border-radius: var(--radius);
+	padding: 32px;
+	width: 100%;
+	max-width: 520px;
+	box-shadow: var(--shadow);
+	position: relative;
+}
+
+[data-theme="dark"] .card {
+	background: rgba(15, 26, 21, 0.85);
+}
+
+/* LOGO */
+.logo {
+	max-width: 180px;
+	display: block;
+	margin: 0 auto 20px;
+}
+
+/* STEPS */
+.step { display: none; }
+.step.active { display: block; }
+
+/* INPUTS */
+input, select {
+	width: 100%;
+	padding: 14px;
+	margin-top: 12px;
+	border-radius: 10px;
+	border: 1px solid var(--color-input-border);
+	background: transparent;
+	color: var(--color-text);
+}
+
+/* BUTTONS */
+.buttons {
+	display: flex;
+	gap: 10px;
+	margin-top: 22px;
+}
+
+button {
+	flex: 1;
+	height: 46px;
+	border-radius: 10px;
+	border: none;
+	cursor: pointer;
+	font-weight: 600;
+}
+
+.next {
+	background: var(--color-primary);
+	color: white;
+}
+
+.back {
+	background: transparent;
+	border: 1px solid var(--color-card-border);
+	color: var(--color-text);
+}
+
+/* TOGGLE */
+.theme-toggle {
+	position: absolute;
+	top: 16px;
+	right: 16px;
+	background: transparent;
+	border: 1px solid var(--color-card-border);
+	border-radius: 999px;
+	padding: 6px 10px;
+	cursor: pointer;
+}
+</style>
+
+<div class="background" id="bg"></div>
+
+<div class="card">
+	<button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+
+	<img src="https://i.imgur.com/O8Bayp2.png" class="logo" />
+
+	<div class="step active">
+		<h3>Seus dados</h3>
+		<input type="text" placeholder="Nome completo" />
+		<input type="email" placeholder="Email" />
+		<input type="tel" placeholder="Telefone" />
+	</div>
+
+	<div class="step">
+		<h3>Informações</h3>
+		<input type="text" placeholder="Empresa (opcional)" />
+		<select>
+			<option>Selecione o interesse</option>
+			<option>Orçamento</option>
+			<option>Suporte</option>
+			<option>Parceria</option>
+		</select>
+	</div>
+
+	<div class="step">
+		<h3>Finalizar</h3>
+		<input type="text" placeholder="Mensagem ou objetivo" />
+	</div>
+
+	<div class="buttons">
+		<button class="back" onclick="prevStep()">Voltar</button>
+		<button class="next" onclick="nextStep()">Próximo</button>
+	</div>
+</div>
+
+<script>
+let currentStep = 0;
+const steps = document.querySelectorAll(".step");
+
+function showStep(index) {
+	steps.forEach((step, i) => {
+		step.classList.toggle("active", i === index);
+	});
+}
+
+function nextStep() {
+	if (currentStep < steps.length - 1) {
+		currentStep++;
+		showStep(currentStep);
+	}
+}
+
+function prevStep() {
+	if (currentStep > 0) {
+		currentStep--;
+		showStep(currentStep);
+	}
+}
+
+/* DARK MODE */
+function toggleTheme() {
+	const current = document.documentElement.getAttribute("data-theme");
+	const newTheme = current === "dark" ? "light" : "dark";
+	document.documentElement.setAttribute("data-theme", newTheme);
+	localStorage.setItem("theme", newTheme);
+}
+
+(function () {
+	const saved = localStorage.getItem("theme");
+	if (saved) {
+		document.documentElement.setAttribute("data-theme", saved);
+	}
+})();
+
+/* GERAR MUITOS BLOBS */
+const bg = document.getElementById("bg");
+const blobs = [];
+
+for (let i = 0; i < 100; i++) {
+	const blob = document.createElement("div");
+	blob.className = "blob";
+	blob.style.top = Math.random() * 100 + "%";
+	blob.style.left = Math.random() * 100 + "%";
+	bg.appendChild(blob);
+	blobs.push(blob);
+}
+
+/* MOVIMENTO FORTE */
+document.addEventListener("mousemove", (e) => {
+	const mouseX = e.clientX;
+	const mouseY = e.clientY;
+
+	blobs.forEach(blob => {
+		const rect = blob.getBoundingClientRect();
+		const bx = rect.left + rect.width / 2;
+		const by = rect.top + rect.height / 2;
+
+		const dx = bx - mouseX;
+		const dy = by - mouseY;
+		const dist = Math.sqrt(dx * dx + dy * dy);
+
+		const max = 180;
+
+		if (dist < max) {
+			const force = (max - dist) / max;
+			const moveX = (dx / dist) * force * 140;
+			const moveY = (dy / dist) * force * 140;
+
+			blob.style.transform = `translate(${moveX}px, ${moveY}px)`;
+		} else {
+			blob.style.transform = `translate(0,0)`;
+		}
+	});
+});
+</script>
