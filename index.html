@@ -35,159 +35,36 @@ body {
 	margin: 0;
 }
 
-.background {
-	position: fixed;
-	inset: 0;
-	background: var(--color-background);
-	z-index: -1;
-	overflow: hidden;
-}
-
-.blob {
-	position: absolute;
-	width: 35px;
-	height: 35px;
-	background: rgba(31, 122, 58, 0.9);
-	border-radius: 50%;
-	filter: blur(2px);
-}
-
-.card {
-	background: var(--color-card-bg);
-	border: 1px solid var(--color-card-border);
-	border-radius: var(--radius);
-	padding: 36px 32px;
-	max-width: 600px;
-	width: 100%;
-	box-shadow: var(--shadow);
-	box-sizing: border-box;
-	position: relative;
-}
-
-.logo {
-	max-width: 180px;
-	margin: 0 auto 20px;
-	display: block;
-}
-
-input, select {
-	width: 100%;
-	padding: 14px;
-	margin-top: 14px;
-	border-radius: 10px;
-	border: 1px solid var(--color-input-border);
-	box-sizing: border-box;
-}
-
-.duo {
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	gap: 16px;
-	margin-top: 14px;
-}
-
-.veiculo-grid {
-	display: grid;
-	grid-template-columns: 2fr 1fr 1fr;
-	gap: 12px;
-	margin-top: 14px;
-}
-
-.veiculo-grid input {
-	margin-top: 0;
-	min-width: 0;
-	box-sizing: border-box;
-}
-
-button {
-	width: 100%;
-	height: 48px;
-	margin-top: 24px;
-	border-radius: 10px;
-	border: none;
-	cursor: pointer;
-	font-weight: 600;
-	transition: background 0.2s;
-}
-
-.next {
-	background: var(--color-primary);
-	color: white;
-}
+.background { position: fixed; inset: 0; background: var(--color-background); z-index: -1; overflow: hidden; }
+.blob { position: absolute; width: 35px; height: 35px; background: rgba(31, 122, 58, 0.9); border-radius: 50%; filter: blur(2px); }
+.card { background: var(--color-card-bg); border: 1px solid var(--color-card-border); border-radius: var(--radius); padding: 36px 32px; max-width: 600px; width: 100%; box-shadow: var(--shadow); box-sizing: border-box; position: relative; }
+.logo { max-width: 180px; margin: 0 auto 20px; display: block; }
+input, select { width: 100%; padding: 14px; margin-top: 14px; border-radius: 10px; border: 1px solid var(--color-input-border); box-sizing: border-box; }
+.duo { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 14px; }
+.veiculo-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; margin-top: 14px; }
+.veiculo-grid input { margin-top: 0; min-width: 0; box-sizing: border-box; }
+button { width: 100%; height: 48px; margin-top: 24px; border-radius: 10px; border: none; cursor: pointer; font-weight: 600; transition: background 0.2s; }
+.next { background: var(--color-primary); color: white; }
 .next:hover { background: #165c2a; }
+.theme-toggle { position: absolute; top: 16px; right: 16px; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--color-card-border); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; }
 
-.theme-toggle {
-	position: absolute;
-	top: 16px;
-	right: 16px;
-	width: 36px;
-	height: 36px;
-	border-radius: 50%;
-	border: 1px solid var(--color-card-border);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-	font-size: 18px;
-}
-
-/* Tela de sucesso com fade out */
-.success-screen {
-	position: fixed;
-	inset: 0;
-	background: rgba(0,0,0,0.35);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	opacity: 1;
-	pointer-events: auto;
-	transition: opacity 0.5s ease;
-	z-index: 9999;
-}
-
-.success-screen.hidden {
-	opacity: 0;
-	pointer-events: none;
-}
-
-.success-card {
-	background: var(--color-card-bg);
-	padding: 30px;
-	border-radius: 14px;
-	text-align: center;
-	box-shadow: var(--shadow);
-	color: var(--color-text);
-	z-index: 10000;
-}
-
+/* Tela de sucesso */
+.success-screen { position: fixed; inset: 0; background: rgba(0,0,0,0.35); display: flex; align-items: center; justify-content: center; opacity: 1; pointer-events: auto; transition: opacity 0.5s ease; z-index: 9999; }
+.success-screen.hidden { opacity: 0; pointer-events: none; }
+.success-card { background: var(--color-card-bg); padding: 30px; border-radius: 14px; text-align: center; box-shadow: var(--shadow); color: var(--color-text); z-index: 10000; }
 .success-card button { margin-top: 20px; }
-
-/* Botão extra no formulário após fade */
-#resetFormButton {
-	display: none;
-	margin-top: 20px;
-}
+#resetFormButton { display: none; margin-top: 20px; }
 
 /* Coberturas */
-.coberturas-section {
-	margin-top: 14px;
-}
-.coberturas-section select {
-	width: 100%;
-}
-.coberturas-badge {
-	display: inline-block;
-	background: #1f7a3a;
-	color: white;
-	padding: 4px 8px;
-	border-radius: 8px;
-	margin: 4px;
-	cursor: pointer;
-}
+.coberturas-section { margin-top: 14px; }
+.coberturas-section select { width: 100%; }
+.coberturas-badge { display: inline-block; background: #1f7a3a; color: white; padding: 4px 8px; border-radius: 8px; margin: 4px; cursor: pointer; }
+input.valor-extra { margin: 4px 0 8px 0; width: calc(100% - 10px); }
+.dias-reserva-container { display: flex; flex-wrap: wrap; margin-top: 4px; }
+select.tipo-reserva { width: 150px; margin-right: 8px; }
+input.dias-reserva { width: 80px; }
 
-@media (max-width: 480px) {
-	.duo, .veiculo-grid { grid-template-columns: 1fr; }
-}
+@media (max-width: 480px) { .duo, .veiculo-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -236,11 +113,13 @@ button {
 		<label for="coberturaSelect">Coberturas</label>
 		<select id="coberturaSelect">
 			<option value="" disabled selected>Escolha uma cobertura</option>
-			<option value="Roubo">Roubo</option>
-			<option value="Incêndio">Incêndio</option>
-			<option value="Vidros">Vidros</option>
-			<option value="Acidentes">Acidentes</option>
-			<option value="Terceiros">Terceiros</option>
+			<option value="Roubo/Furto">Roubo/Furto</option>
+			<option value="Danos Morais">Danos Morais</option>
+			<option value="Danos Materiais">Danos Materiais</option>
+			<option value="Danos Corporais">Danos Corporais</option>
+			<option value="Custo de Defesa">Custo de Defesa</option>
+			<option value="Despesa Extraordinária">Despesa Extraordinária</option>
+			<option value="Carro Reserva">Carro Reserva</option>
 		</select>
 		<div id="coberturasSelecionadas" style="margin-top: 12px;"></div>
 	</div>
@@ -250,16 +129,12 @@ button {
 </div>
 
 <script>
+// Toggle tema
 function toggleTheme() {
 	const current = document.documentElement.getAttribute("data-theme");
 	const themeBtn = document.getElementById("themeBtn");
-	if (current === "dark") {
-		document.documentElement.setAttribute("data-theme", "light");
-		themeBtn.textContent = "🌞";
-	} else {
-		document.documentElement.setAttribute("data-theme", "dark");
-		themeBtn.textContent = "🌙";
-	}
+	if (current === "dark") { document.documentElement.setAttribute("data-theme", "light"); themeBtn.textContent = "🌞"; }
+	else { document.documentElement.setAttribute("data-theme", "dark"); themeBtn.textContent = "🌙"; }
 }
 window.onload = () => {
 	const theme = document.documentElement.getAttribute("data-theme") || "light";
@@ -267,49 +142,138 @@ window.onload = () => {
 };
 
 // BLOBS
+// BLOBS ANIMADOS COM REPULSÃO DO MOUSE
 const bg = document.getElementById("bg");
-for (let i = 0; i < 100; i++) {
+const blobs = [];
+
+for (let i = 0; i < 400; i++) {
 	const blob = document.createElement("div");
 	blob.className = "blob";
-	blob.style.top = Math.random() * 100 + "%";
-	blob.style.left = Math.random() * 100 + "%";
+
+	// Posição inicial aleatória
+	const x = Math.random() * window.innerWidth;
+	const y = Math.random() * window.innerHeight;
+
+	blob.style.left = x + "px";
+	blob.style.top = y + "px";
+
+	// Guardar posição original
+	blob.dataset.ox = x;
+	blob.dataset.oy = y;
+
 	bg.appendChild(blob);
+	blobs.push(blob);
 }
 
-// VALIDAÇÕES
-document.getElementById("placa").addEventListener("input", function(){
-	this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,7);
-});
-document.getElementById("ano").addEventListener("input", function(){
-	this.value = this.value.replace(/[^0-9]/g,'').slice(0,4);
+// Movimentação baseada no mouse
+document.addEventListener("mousemove", e => {
+	const mx = e.clientX;
+	const my = e.clientY;
+
+	blobs.forEach(blob => {
+		const ox = parseFloat(blob.dataset.ox);
+		const oy = parseFloat(blob.dataset.oy);
+
+		const dx = mx - ox;
+		const dy = my - oy;
+		const dist = Math.sqrt(dx*dx + dy*dy);
+
+		const maxDist = 150; // distância máxima de repulsão
+		if (dist < maxDist) {
+			const force = (maxDist - dist) / maxDist * 30; // intensidade
+			const angle = Math.atan2(dy, dx);
+
+			blob.style.transform = `translate(${-Math.cos(angle)*force}px, ${-Math.sin(angle)*force}px)`;
+		} else {
+			blob.style.transform = `translate(0,0)`;
+		}
+	});
 });
 
-// Coberturas
+// Validações
+document.getElementById("placa").addEventListener("input", function(){ this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,7); });
+document.getElementById("ano").addEventListener("input", function(){ this.value = this.value.replace(/[^0-9]/g,'').slice(0,4); });
+
+// Coberturas com campos adicionais
 const selectCobertura = document.getElementById("coberturaSelect");
 const divSelecionadas = document.getElementById("coberturasSelecionadas");
 const coberturasEscolhidas = new Set();
 
+const coberturasComValor = ["Roubo/Furto","Danos Morais","Danos Materiais","Danos Corporais","Custo de Defesa","Despesa Extraordinária"];
+const coberturaCarroReserva = "Carro Reserva";
+
+// Máscara de reais inteligente
+function mascaraReaisInteligente(event) {
+	const input = event.target;
+	let valor = input.value.replace(/\D/g, "");
+	if(valor === "") { input.value = ""; return; }
+	valor = (parseInt(valor,10)/100).toFixed(2);
+	valor = valor.replace(".", ",");
+	valor = valor.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+	input.value = "R$ " + valor;
+}
+
 selectCobertura.addEventListener("change", () => {
 	const valor = selectCobertura.value;
-	if (!valor || coberturasEscolhidas.has(valor)) return;
-
+	if(!valor || coberturasEscolhidas.has(valor)) return;
 	coberturasEscolhidas.add(valor);
 
 	const badge = document.createElement("span");
 	badge.textContent = valor + " ✖";
 	badge.className = "coberturas-badge";
 	badge.dataset.valor = valor;
+	divSelecionadas.appendChild(badge);
 
+	// Campos de valor
+	if(coberturasComValor.includes(valor)) {
+		const inputExtra = document.createElement("input");
+		inputExtra.placeholder = "Valor em R$";
+		inputExtra.dataset.cobertura = valor;
+		inputExtra.className = "valor-extra";
+		inputExtra.addEventListener("input", mascaraReaisInteligente);
+		divSelecionadas.appendChild(inputExtra);
+	}
+
+	// Carro Reserva
+	if(valor === coberturaCarroReserva) {
+		const container = document.createElement("div");
+		container.className = "dias-reserva-container";
+		container.dataset.cobertura = valor;
+		container.style.display = "flex";
+		container.style.flexWrap = "wrap";
+		container.style.marginTop = "4px";
+
+		const selectExtra = document.createElement("select");
+		selectExtra.className = "tipo-reserva";
+		selectExtra.dataset.cobertura = valor;
+		selectExtra.innerHTML = `<option value="" disabled selected>Tipo</option>
+			<option value="Basico">Básico</option>
+			<option value="Medio">Médio</option>
+			<option value="Executivo">Executivo</option>`;
+
+		const inputDias = document.createElement("input");
+		inputDias.type = "number";
+		inputDias.placeholder = "Dias";
+		inputDias.className = "dias-reserva";
+		inputDias.dataset.cobertura = valor;
+
+		container.appendChild(selectExtra);
+		container.appendChild(inputDias);
+		divSelecionadas.appendChild(container);
+	}
+
+	// Remover badge + inputs
 	badge.addEventListener("click", () => {
 		coberturasEscolhidas.delete(valor);
 		divSelecionadas.removeChild(badge);
+		const extras = divSelecionadas.querySelectorAll(`[data-cobertura="${valor}"]`);
+		extras.forEach(el => divSelecionadas.removeChild(el));
 	});
 
-	divSelecionadas.appendChild(badge);
 	selectCobertura.value = "";
 });
 
-// ENVIO PARA N8N
+// ENVIO
 const successScreen = document.getElementById("successScreen");
 const resetFormButton = document.getElementById("resetFormButton");
 
@@ -321,9 +285,19 @@ async function enviarFormulario() {
 	const modelo = document.getElementById("modelo").value;
 	const ano = document.getElementById("ano").value;
 	const placa = document.getElementById("placa").value;
-	const coberturasArray = Array.from(coberturasEscolhidas);
 
-	if (!vendedor || !proposta || !segurado || !modelo || !ano || !placa) {
+	const coberturasArray = Array.from(coberturasEscolhidas).map(c => {
+		const extras = divSelecionadas.querySelectorAll(`[data-cobertura="${c}"]`);
+		let detalhe = {};
+		extras.forEach(el => {
+			if(el.classList.contains("valor-extra")) detalhe.valor = el.value;
+			if(el.classList.contains("tipo-reserva")) detalhe.tipo = el.value;
+			if(el.classList.contains("dias-reserva")) detalhe.dias = el.value;
+		});
+		return { nome: c, ...detalhe };
+	});
+
+	if(!vendedor || !proposta || !segurado || !modelo || !ano || !placa) {
 		alert("Preencha todos os campos obrigatórios");
 		return;
 	}
@@ -336,7 +310,7 @@ async function enviarFormulario() {
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify(dadosFormulario)
 		});
-		if (!response.ok) throw new Error("Erro ao enviar os dados");
+		if(!response.ok) throw new Error("Erro ao enviar os dados");
 
 		successScreen.classList.remove("hidden");
 		resetFormButton.style.display = "none";
@@ -346,7 +320,7 @@ async function enviarFormulario() {
 			resetFormButton.style.display = "block";
 		}, 5000);
 
-	} catch (error) {
+	} catch(error) {
 		alert("Falha ao enviar o formulário: " + error.message);
 	}
 }
