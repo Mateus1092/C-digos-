@@ -6,9 +6,6 @@
 <title>Formulário ECO</title>
 
 <style>
-/* ===================== */
-/* VARIÁVEIS (CORES/TEMA) */
-/* ===================== */
 :root {
 	--color-primary: #1f7a3a;
 	--color-background: #f6f8f7;
@@ -16,12 +13,10 @@
 	--color-card-border: #e5e7eb;
 	--color-text: #1f2937;
 	--color-input-border: #d1d5db;
-
 	--radius: 14px;
 	--shadow: 0 15px 35px rgba(0,0,0,0.08);
 }
 
-/* TEMA DARK */
 [data-theme="dark"] {
 	--color-background: #0b1210;
 	--color-card-bg: #0f1a15;
@@ -30,9 +25,16 @@
 	--color-input-border: #2d3a34;
 }
 
-/* ===================== */
-/* FUNDO + BLOBS */
-/* ===================== */
+body {
+	font-family: Inter, sans-serif;
+	display: flex;
+	justify-content: center;
+	padding: 60px 16px;
+	color: var(--color-text);
+	background: var(--color-background);
+	margin: 0;
+}
+
 .background {
 	position: fixed;
 	inset: 0;
@@ -50,19 +52,6 @@
 	filter: blur(2px);
 }
 
-/* ===================== */
-/* BASE */
-body {
-	font-family: Inter, sans-serif;
-	display: flex;
-	justify-content: center;
-	padding: 60px 16px;
-	color: var(--color-text);
-	background: var(--color-background);
-	margin: 0;
-}
-
-/* CARD PRINCIPAL */
 .card {
 	background: var(--color-card-bg);
 	border: 1px solid var(--color-card-border);
@@ -75,14 +64,12 @@ body {
 	position: relative;
 }
 
-/* LOGO */
 .logo {
 	max-width: 180px;
 	margin: 0 auto 20px;
 	display: block;
 }
 
-/* INPUT PADRÃO */
 input, select {
 	width: 100%;
 	padding: 14px;
@@ -92,7 +79,6 @@ input, select {
 	box-sizing: border-box;
 }
 
-/* SEGURADO + CONDUTOR */
 .duo {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
@@ -100,7 +86,6 @@ input, select {
 	margin-top: 14px;
 }
 
-/* VEÍCULO */
 .veiculo-grid {
 	display: grid;
 	grid-template-columns: 2fr 1fr 1fr;
@@ -114,7 +99,6 @@ input, select {
 	box-sizing: border-box;
 }
 
-/* BOTÕES */
 button {
 	width: 100%;
 	height: 48px;
@@ -130,12 +114,8 @@ button {
 	background: var(--color-primary);
 	color: white;
 }
+.next:hover { background: #165c2a; }
 
-.next:hover {
-	background: #165c2a;
-}
-
-/* TOGGLE TEMA */
 .theme-toggle {
 	position: absolute;
 	top: 16px;
@@ -151,7 +131,7 @@ button {
 	font-size: 18px;
 }
 
-/* TELA DE SUCESSO */
+/* Tela de sucesso com fade out */
 .success-screen {
 	position: fixed;
 	inset: 0;
@@ -159,6 +139,15 @@ button {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	opacity: 1;
+	pointer-events: auto;
+	transition: opacity 0.5s ease;
+	z-index: 9999;
+}
+
+.success-screen.hidden {
+	opacity: 0;
+	pointer-events: none;
 }
 
 .success-card {
@@ -168,23 +157,41 @@ button {
 	text-align: center;
 	box-shadow: var(--shadow);
 	color: var(--color-text);
+	z-index: 10000;
 }
 
-.hidden {
+.success-card button { margin-top: 20px; }
+
+/* Botão extra no formulário após fade */
+#resetFormButton {
 	display: none;
+	margin-top: 20px;
 }
 
-/* RESPONSIVO */
+/* Coberturas */
+.coberturas-section {
+	margin-top: 14px;
+}
+.coberturas-section select {
+	width: 100%;
+}
+.coberturas-badge {
+	display: inline-block;
+	background: #1f7a3a;
+	color: white;
+	padding: 4px 8px;
+	border-radius: 8px;
+	margin: 4px;
+	cursor: pointer;
+}
+
 @media (max-width: 480px) {
-	.duo, .veiculo-grid {
-		grid-template-columns: 1fr;
-	}
+	.duo, .veiculo-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 <body>
 
-<!-- FUNDO -->
 <div class="background" id="bg"></div>
 
 <!-- TELA DE SUCESSO -->
@@ -195,16 +202,11 @@ button {
 	</div>
 </div>
 
-<!-- CARD PRINCIPAL -->
 <div class="card">
-
 	<button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌞</button>
-
 	<img src="https://i.imgur.com/O8Bayp2.png" class="logo" />
-
 	<h3>Preencha os dados</h3>
 
-	<!-- VENDEDOR -->
 	<select id="vendedor">
 		<option value="" disabled selected>Selecione o vendedor</option>
 		<option>Inaiá</option>
@@ -212,33 +214,42 @@ button {
 		<option>Patrícia</option>
 	</select>
 
-	<!-- PROPOSTA -->
 	<select id="proposta">
 		<option value="" disabled selected>Proposta comercial</option>
 		<option>Allianz</option>
 		<option>Yelum</option>
 	</select>
 
-	<!-- SEGURADO + CONDUTOR -->
 	<div class="duo">
 		<input id="segurado" placeholder="Nome do segurado">
 		<input id="condutor2" placeholder="2° condutor (opcional)">
 	</div>
 
-	<!-- VEÍCULO -->
 	<div class="veiculo-grid">
 		<input id="modelo" placeholder="Modelo do veículo">
 		<input id="ano" placeholder="Ano" maxlength="4">
 		<input id="placa" placeholder="Placa" maxlength="7">
 	</div>
 
-	<button class="next" onclick="enviarFormulario()">Enviar</button>
+	<!-- Coberturas -->
+	<div class="coberturas-section">
+		<label for="coberturaSelect">Coberturas</label>
+		<select id="coberturaSelect">
+			<option value="" disabled selected>Escolha uma cobertura</option>
+			<option value="Roubo">Roubo</option>
+			<option value="Incêndio">Incêndio</option>
+			<option value="Vidros">Vidros</option>
+			<option value="Acidentes">Acidentes</option>
+			<option value="Terceiros">Terceiros</option>
+		</select>
+		<div id="coberturasSelecionadas" style="margin-top: 12px;"></div>
+	</div>
 
+	<button class="next" onclick="enviarFormulario()">Enviar</button>
+	<button id="resetFormButton" class="next" onclick="resetForm()">Preencher novamente</button>
 </div>
 
 <script>
-// =====================
-// TEMA (LIGHT/DARK) com ícones
 function toggleTheme() {
 	const current = document.documentElement.getAttribute("data-theme");
 	const themeBtn = document.getElementById("themeBtn");
@@ -250,14 +261,12 @@ function toggleTheme() {
 		themeBtn.textContent = "🌙";
 	}
 }
-
-// Inicializa ícone do tema
 window.onload = () => {
 	const theme = document.documentElement.getAttribute("data-theme") || "light";
 	document.getElementById("themeBtn").textContent = theme === "dark" ? "🌙" : "🌞";
 };
 
-// BLOBS ANIMADOS
+// BLOBS
 const bg = document.getElementById("bg");
 for (let i = 0; i < 100; i++) {
 	const blob = document.createElement("div");
@@ -271,13 +280,39 @@ for (let i = 0; i < 100; i++) {
 document.getElementById("placa").addEventListener("input", function(){
 	this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,7);
 });
-
 document.getElementById("ano").addEventListener("input", function(){
 	this.value = this.value.replace(/[^0-9]/g,'').slice(0,4);
 });
 
-// =====================
+// Coberturas
+const selectCobertura = document.getElementById("coberturaSelect");
+const divSelecionadas = document.getElementById("coberturasSelecionadas");
+const coberturasEscolhidas = new Set();
+
+selectCobertura.addEventListener("change", () => {
+	const valor = selectCobertura.value;
+	if (!valor || coberturasEscolhidas.has(valor)) return;
+
+	coberturasEscolhidas.add(valor);
+
+	const badge = document.createElement("span");
+	badge.textContent = valor + " ✖";
+	badge.className = "coberturas-badge";
+	badge.dataset.valor = valor;
+
+	badge.addEventListener("click", () => {
+		coberturasEscolhidas.delete(valor);
+		divSelecionadas.removeChild(badge);
+	});
+
+	divSelecionadas.appendChild(badge);
+	selectCobertura.value = "";
+});
+
 // ENVIO PARA N8N
+const successScreen = document.getElementById("successScreen");
+const resetFormButton = document.getElementById("resetFormButton");
+
 async function enviarFormulario() {
 	const vendedor = document.getElementById("vendedor").value;
 	const proposta = document.getElementById("proposta").value;
@@ -286,47 +321,42 @@ async function enviarFormulario() {
 	const modelo = document.getElementById("modelo").value;
 	const ano = document.getElementById("ano").value;
 	const placa = document.getElementById("placa").value;
+	const coberturasArray = Array.from(coberturasEscolhidas);
 
 	if (!vendedor || !proposta || !segurado || !modelo || !ano || !placa) {
 		alert("Preencha todos os campos obrigatórios");
 		return;
 	}
 
-	const dadosFormulario = {
-		vendedor,
-		proposta,
-		segurado,
-		condutor2,
-		modelo,
-		ano,
-		placa
-	};
+	const dadosFormulario = { vendedor, proposta, segurado, condutor2, modelo, ano, placa, coberturas: coberturasArray };
 
 	try {
 		const response = await fetch("https://projeto1-n8n.khyklu.easypanel.host/webhook-test/db0338f3-a387-4a7a-8981-c17c540ed3ea", {
 			method: "POST",
-			headers: {
-				"Content-Type": "application/json"
-			},
+			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify(dadosFormulario)
 		});
+		if (!response.ok) throw new Error("Erro ao enviar os dados");
 
-		if (!response.ok) {
-			throw new Error("Erro ao enviar os dados");
-		}
+		successScreen.classList.remove("hidden");
+		resetFormButton.style.display = "none";
 
-		// Mostrar tela de sucesso
-		document.getElementById("successScreen").classList.remove("hidden");
+		setTimeout(() => {
+			successScreen.classList.add("hidden");
+			resetFormButton.style.display = "block";
+		}, 5000);
 
 	} catch (error) {
 		alert("Falha ao enviar o formulário: " + error.message);
 	}
 }
 
-// RESET FORMULÁRIO
 function resetForm() {
 	document.querySelectorAll("input, select").forEach(el => el.value = "");
-	document.getElementById("successScreen").classList.add("hidden");
+	coberturasEscolhidas.clear();
+	divSelecionadas.innerHTML = "";
+	successScreen.classList.add("hidden");
+	resetFormButton.style.display = "none";
 }
 </script>
 
