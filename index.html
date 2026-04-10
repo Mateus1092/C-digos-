@@ -12,6 +12,7 @@
 	--color-card-bg: #ffffff;
 	--color-card-border: #e5e7eb;
 	--color-text: #1f2937;
+	--color-input-border: #d1d5db;
 
 	--radius: 14px;
 	--shadow: 0 15px 35px rgba(0,0,0,0.08);
@@ -22,6 +23,26 @@
 	--color-card-bg: #0f1a15;
 	--color-card-border: #1f2a24;
 	--color-text: #ecfdf5;
+	--color-input-border: #2d3a34;
+}
+
+.background {
+	position: fixed;
+	inset: 0;
+	background: var(--color-background);
+	z-index: -1;
+	overflow: hidden;
+}
+
+.blob {
+	position: absolute;
+	width: 35px;
+	height: 35px;
+	background: rgba(31, 122, 58, 0.9);
+	border-radius: 50%;
+	filter: blur(2px);
+	transition: transform 0.2s ease;
+	pointer-events: none;
 }
 
 body {
@@ -29,27 +50,37 @@ body {
 	display: flex;
 	justify-content: center;
 	padding: 60px 16px;
-	background: var(--color-background);
 	color: var(--color-text);
 }
 
 .card {
-	background: var(--color-card-bg);
+	backdrop-filter: blur(14px);
+	background: rgba(255,255,255,0.85);
 	border: 1px solid var(--color-card-border);
 	border-radius: var(--radius);
 	padding: 32px;
 	width: 100%;
-	max-width: 400px;
+	max-width: 520px;
 	box-shadow: var(--shadow);
 	position: relative;
+}
+
+[data-theme="dark"] .card {
+	background: rgba(15, 26, 21, 0.85);
+}
+
+.logo {
+	max-width: 180px;
+	display: block;
+	margin: 0 auto 20px;
 }
 
 select {
 	width: 100%;
 	padding: 14px;
-	margin-top: 16px;
+	margin-top: 12px;
 	border-radius: 10px;
-	border: 1px solid var(--color-card-border);
+	border: 1px solid var(--color-input-border);
 	background: transparent;
 	color: var(--color-text);
 }
@@ -57,11 +88,14 @@ select {
 button {
 	width: 100%;
 	height: 46px;
-	margin-top: 20px;
 	border-radius: 10px;
 	border: none;
 	cursor: pointer;
 	font-weight: 600;
+	margin-top: 20px;
+}
+
+.next {
 	background: var(--color-primary);
 	color: white;
 }
@@ -81,16 +115,26 @@ button {
 }
 
 [data-theme="dark"] .theme-toggle {
-	background: rgba(255,255,255,0.05);
+	background: rgba(255, 255, 255, 0.05);
 	color: #facc15;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.theme-toggle svg {
+	width: 20px;
+	height: 20px;
 }
 </style>
 </head>
 
 <body>
 
+<div class="background" id="bg"></div>
+
 <div class="card">
 	<button class="theme-toggle" onclick="toggleTheme()" id="themeBtn"></button>
+
+	<img src="https://i.imgur.com/O8Bayp2.png" class="logo" />
 
 	<h3>Selecionar vendedor</h3>
 
@@ -101,7 +145,7 @@ button {
 		<option value="Patricia">Patrícia</option>
 	</select>
 
-	<button onclick="enviarFormulario()">Enviar</button>
+	<button class="next" onclick="enviarFormulario()">Enviar</button>
 </div>
 
 <script>
@@ -140,7 +184,47 @@ function updateIcon() {
 	updateIcon();
 })();
 
-/* ENVIO PARA N8N */
+/* BLOBS */
+const bg = document.getElementById("bg");
+const blobs = [];
+
+for (let i = 0; i < 200; i++) {
+	const blob = document.createElement("div");
+	blob.className = "blob";
+	blob.style.top = Math.random() * 100 + "%";
+	blob.style.left = Math.random() * 100 + "%";
+	bg.appendChild(blob);
+	blobs.push(blob);
+}
+
+document.addEventListener("mousemove", (e) => {
+	const mouseX = e.clientX;
+	const mouseY = e.clientY;
+
+	blobs.forEach(blob => {
+		const rect = blob.getBoundingClientRect();
+		const bx = rect.left + rect.width / 2;
+		const by = rect.top + rect.height / 2;
+
+		const dx = bx - mouseX;
+		const dy = by - mouseY;
+		const dist = Math.sqrt(dx * dx + dy * dy);
+
+		const max = 180;
+
+		if (dist < max) {
+			const force = (max - dist) / max;
+			const moveX = (dx / dist) * force * 140;
+			const moveY = (dy / dist) * force * 140;
+
+			blob.style.transform = `translate(${moveX}px, ${moveY}px)`;
+		} else {
+			blob.style.transform = `translate(0,0)`;
+		}
+	});
+});
+
+/* ENVIO N8N */
 async function enviarFormulario() {
 	const vendedor = document.getElementById("vendedor").value;
 
@@ -149,19 +233,15 @@ async function enviarFormulario() {
 		return;
 	}
 
-	try {
-		await fetch("https://projeto1-n8n.khyklu.easypanel.host/webhook-test/db0338f3-a387-4a7a-8981-c17c540ed3ea", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify({ vendedor })
-		});
+	await fetch("https://projeto1-n8n.khyklu.easypanel.host/webhook-test/db0338f3-a387-4a7a-8981-c17c540ed3ea", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify({ vendedor })
+	});
 
-		alert("Enviado com sucesso!");
-	} catch (err) {
-		alert("Erro ao enviar");
-	}
+	alert("Enviado com sucesso!");
 }
 </script>
 
