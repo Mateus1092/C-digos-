@@ -6,6 +6,10 @@
 <title>Formulário ECO</title>
 
 <style>
+
+/* ===================== */
+/* VARIÁVEIS (CORES/TEMA) */
+/* ===================== */
 :root {
 	--color-primary: #1f7a3a;
 	--color-background: #f6f8f7;
@@ -18,6 +22,7 @@
 	--shadow: 0 15px 35px rgba(0,0,0,0.08);
 }
 
+/* TEMA DARK */
 [data-theme="dark"] {
 	--color-background: #0b1210;
 	--color-card-bg: #0f1a15;
@@ -26,6 +31,9 @@
 	--color-input-border: #2d3a34;
 }
 
+/* ===================== */
+/* FUNDO + BLOBS */
+/* ===================== */
 .background {
 	position: fixed;
 	inset: 0;
@@ -41,74 +49,87 @@
 	background: rgba(31, 122, 58, 0.9);
 	border-radius: 50%;
 	filter: blur(2px);
-	transition: transform 0.2s ease;
-	pointer-events: none;
 }
 
+/* ===================== */
+/* BASE */
+/* ===================== */
 body {
 	font-family: Inter, sans-serif;
 	display: flex;
 	justify-content: center;
 	padding: 60px 16px;
 	color: var(--color-text);
+	background: var(--color-background);
+	margin: 0;
 }
 
+/* CARD PRINCIPAL */
 .card {
-	backdrop-filter: blur(14px);
-	background: rgba(255,255,255,0.85);
+	background: var(--color-card-bg);
 	border: 1px solid var(--color-card-border);
 	border-radius: var(--radius);
-	padding: 32px;
+	padding: 36px 32px;
+	max-width: 600px;
 	width: 100%;
-	max-width: 520px;
 	box-shadow: var(--shadow);
+	box-sizing: border-box;
 	position: relative;
 }
 
-[data-theme="dark"] .card {
-	background: rgba(15, 26, 21, 0.85);
-}
-
+/* LOGO */
 .logo {
 	max-width: 180px;
-	display: block;
 	margin: 0 auto 20px;
+	display: block;
 }
 
-input, textarea, select {
+/* INPUT PADRÃO */
+input, select {
 	width: 100%;
 	padding: 14px;
-	margin-top: 12px;
+	margin-top: 14px;
 	border-radius: 10px;
 	border: 1px solid var(--color-input-border);
-	background: transparent;
-	color: var(--color-text);
-	font-family: inherit;
+	box-sizing: border-box;
 }
 
+/* ===================== */
+/* SEGURADO + CONDUTOR */
+/* ===================== */
+.duo {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 16px;
+	margin-top: 14px;
+}
+
+/* ===================== */
+/* VEÍCULO */
 .veiculo-grid {
 	display: grid;
-	grid-template-columns: 1fr 1fr 1fr;
-	gap: 10px;
+	grid-template-columns: 2fr 1fr 1fr;
+	gap: 12px;
+	margin-top: 14px;
 }
 
-select option {
-	color: #000;
+.veiculo-grid input {
+	margin-top: 0;
+	min-width: 0;
+	box-sizing: border-box;
 }
 
-[data-theme="dark"] select option {
-	color: #fff;
-	background: #0f1a15;
-}
-
+/* ===================== */
+/* BOTÕES */
 button {
 	width: 100%;
-	height: 46px;
+	height: 48px;
+	margin-top: 24px;
 	border-radius: 10px;
 	border: none;
 	cursor: pointer;
 	font-weight: 600;
-	margin-top: 20px;
+	transition: background 0.2s;
 }
 
 .next {
@@ -116,33 +137,28 @@ button {
 	color: white;
 }
 
+.next:hover {
+	background: #165c2a;
+}
+
+/* ===================== */
+/* TOGGLE TEMA */
 .theme-toggle {
 	position: absolute;
 	top: 16px;
 	right: 16px;
 	width: 36px;
 	height: 36px;
-	background: transparent;
-	border: 1px solid var(--color-card-border);
 	border-radius: 50%;
-	cursor: pointer;
+	border: 1px solid var(--color-card-border);
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: 0;
+	cursor: pointer;
 }
 
-[data-theme="dark"] .theme-toggle {
-	background: rgba(255, 255, 255, 0.05);
-	color: #facc15;
-	border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.theme-toggle svg {
-	width: 16px;
-	height: 16px;
-}
-
+/* ===================== */
+/* TELA DE SUCESSO */
 .success-screen {
 	position: fixed;
 	inset: 0;
@@ -150,188 +166,133 @@ button {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	z-index: 999;
-	backdrop-filter: blur(6px);
 }
 
 .success-card {
-	background: var(--color-card-bg);
-	border: 1px solid var(--color-card-border);
+	background: white;
 	padding: 30px;
-	border-radius: var(--radius);
+	border-radius: 14px;
 	text-align: center;
-	width: 90%;
-	max-width: 360px;
-	box-shadow: var(--shadow);
-}
-
-.success-card h2 {
-	margin-bottom: 10px;
-	color: var(--color-primary);
-}
-
-.success-card p {
-	margin-bottom: 20px;
-	color: var(--color-text);
-}
-
-.success-card button {
-	background: var(--color-primary);
-	color: white;
 }
 
 .hidden {
 	display: none;
 }
+
+/* ===================== */
+/* RESPONSIVO */
+@media (max-width: 480px) {
+	.duo, .veiculo-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
 </style>
 </head>
 
 <body>
 
+<!-- FUNDO -->
 <div class="background" id="bg"></div>
 
+<!-- TELA DE SUCESSO -->
 <div id="successScreen" class="success-screen hidden">
 	<div class="success-card">
 		<h2>Enviado com sucesso</h2>
-		<p>Seu formulário foi enviado corretamente.</p>
 		<button onclick="resetForm()">Preencher novamente</button>
 	</div>
 </div>
 
+<!-- CARD PRINCIPAL -->
 <div class="card">
+
 	<button class="theme-toggle" onclick="toggleTheme()" id="themeBtn"></button>
 
 	<img src="https://i.imgur.com/O8Bayp2.png" class="logo" />
 
 	<h3>Preencha os dados</h3>
 
+	<!-- VENDEDOR -->
 	<select id="vendedor">
 		<option value="" disabled selected>Selecione o vendedor</option>
-		<option value="Inaia">Inaiá</option>
-		<option value="Nicolas">Nicolas</option>
-		<option value="Patricia">Patrícia</option>
+		<option>Inaiá</option>
+		<option>Nicolas</option>
+		<option>Patrícia</option>
 	</select>
 
+	<!-- PROPOSTA -->
 	<select id="proposta">
 		<option value="" disabled selected>Proposta comercial</option>
-		<option value="Allianz">Allianz</option>
-		<option value="Yelum">Yelum</option>
+		<option>Allianz</option>
+		<option>Yelum</option>
 	</select>
 
-	<input type="text" id="segurado" placeholder="Nome do segurado">
-
-	<input type="text" id="condutor2" placeholder="2° condutor (opcional)">
+	<!-- SEGURADO + CONDUTOR -->
+	<div class="duo">
+		<input id="segurado" placeholder="Nome do segurado">
+		<input id="condutor2" placeholder="2° condutor (opcional)">
+	</div>
 
 	<!-- VEÍCULO -->
 	<div class="veiculo-grid">
-		<input type="text" id="modelo" placeholder="Modelo">
-		<input type="text" id="ano" placeholder="Ano">
-		<input type="text" id="placa" placeholder="Placa">
+		<input id="modelo" placeholder="Modelo do veículo">
+		<input id="ano" placeholder="Ano" maxlength="4">
+		<input id="placa" placeholder="Placa" maxlength="7">
 	</div>
 
 	<button class="next" onclick="enviarFormulario()">Enviar</button>
+
 </div>
 
 <script>
-const moonIcon = `<svg viewBox="0 0 24 24" fill="none">
-<path d="M21 12.79A9 9 0 0 1 11.21 3 
-7 7 0 1 0 21 12.79Z"
-stroke="currentColor" stroke-width="2"/>
-</svg>`;
 
-const sunIcon = `<svg viewBox="0 0 24 24" fill="none">
-<circle cx="12" cy="12" r="5" stroke="#facc15" stroke-width="2"/>
-<line x1="12" y1="1" x2="12" y2="3" stroke="#facc15" stroke-width="2"/>
-<line x1="12" y1="21" x2="12" y2="23" stroke="#facc15" stroke-width="2"/>
-<line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="#facc15" stroke-width="2"/>
-<line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="#facc15" stroke-width="2"/>
-<line x1="1" y1="12" x2="3" y2="12" stroke="#facc15" stroke-width="2"/>
-<line x1="21" y1="12" x2="23" y2="12" stroke="#facc15" stroke-width="2"/>
-<line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="#facc15" stroke-width="2"/>
-<line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="#facc15" stroke-width="2"/>
-</svg>`;
-
+/* TEMA (LIGHT/DARK) */
 function toggleTheme() {
 	const current = document.documentElement.getAttribute("data-theme");
 	const newTheme = current === "dark" ? "light" : "dark";
 	document.documentElement.setAttribute("data-theme", newTheme);
-	localStorage.setItem("theme", newTheme);
-	updateIcon();
 }
 
-function updateIcon() {
-	const theme = document.documentElement.getAttribute("data-theme");
-	document.getElementById("themeBtn").innerHTML =
-		theme === "dark" ? sunIcon : moonIcon;
-}
-
-(function () {
-	const saved = localStorage.getItem("theme") || "light";
-	document.documentElement.setAttribute("data-theme", saved);
-	updateIcon();
-})();
-
+/* BLOBS */
 const bg = document.getElementById("bg");
-for (let i = 0; i < 200; i++) {
+for (let i = 0; i < 100; i++) {
 	const blob = document.createElement("div");
 	blob.className = "blob";
 	blob.style.top = Math.random() * 100 + "%";
 	blob.style.left = Math.random() * 100 + "%";
 	bg.appendChild(blob);
-
-	document.addEventListener("mousemove", (e) => {
-		const dx = blob.offsetLeft - e.clientX;
-		const dy = blob.offsetTop - e.clientY;
-		const dist = Math.sqrt(dx*dx + dy*dy);
-
-		if (dist < 180) {
-			blob.style.transform = `translate(${dx * 0.3}px, ${dy * 0.3}px)`;
-		} else {
-			blob.style.transform = `translate(0,0)`;
-		}
-	});
 }
 
+/* VALIDAÇÕES */
+document.getElementById("placa").addEventListener("input", function(){
+	this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,7);
+});
+
+document.getElementById("ano").addEventListener("input", function(){
+	this.value = this.value.replace(/[^0-9]/g,'').slice(0,4);
+});
+
+/* ENVIO */
 async function enviarFormulario() {
 	const vendedor = document.getElementById("vendedor").value;
 	const proposta = document.getElementById("proposta").value;
 	const segurado = document.getElementById("segurado").value;
-
 	const modelo = document.getElementById("modelo").value;
-	const ano = document.getElementById("ano").value;
-	const placa = document.getElementById("placa").value;
 
-	if (!vendedor || !proposta || !segurado) {
+	if (!vendedor || !proposta || !segurado || !modelo) {
 		alert("Preencha os campos obrigatórios");
 		return;
 	}
 
-	await fetch("https://projeto1-n8n.khyklu.easypanel.host/webhook-test/db0338f3-a387-4a7a-8981-c17c540ed3ea", {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({
-			vendedor,
-			proposta,
-			segurado,
-			modelo,
-			ano,
-			placa
-		})
-	});
-
 	document.getElementById("successScreen").classList.remove("hidden");
 }
 
+/* RESET */
 function resetForm() {
-	document.getElementById("vendedor").value = "";
-	document.getElementById("proposta").value = "";
-	document.getElementById("segurado").value = "";
-	document.getElementById("condutor2").value = "";
-	document.getElementById("modelo").value = "";
-	document.getElementById("ano").value = "";
-	document.getElementById("placa").value = "";
+	document.querySelectorAll("input, select").forEach(el => el.value = "");
 	document.getElementById("successScreen").classList.add("hidden");
 }
+
 </script>
 
 </body>
