@@ -55,8 +55,8 @@ input.valor-extra { margin: 4px 0 8px 0; width: calc(100% - 10px); }
 .dias-reserva-container { display: flex; flex-wrap: wrap; margin-top: 4px; }
 select.tipo-reserva { width: 150px; margin-right: 8px; }
 input.dias-reserva { width: 80px; }
-#simplesContainer { margin-bottom: 6px; }
-#complexasContainer { margin-top: 4px; }
+#simplesContainer, #simplesAssistenciasContainer { margin-bottom: 6px; }
+#complexasContainer, #complexasAssistenciasContainer { margin-top: 4px; }
 @media (max-width: 480px) { .duo, .veiculo-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
@@ -99,6 +99,7 @@ input.dias-reserva { width: 80px; }
 		<input id="placa" placeholder="Placa" maxlength="7">
 	</div>
 
+	<!-- Coberturas -->
 	<div class="coberturas-section">
 		<label for="coberturaSelect">Coberturas</label>
 		<select id="coberturaSelect">
@@ -116,6 +117,23 @@ input.dias-reserva { width: 80px; }
 		<div id="coberturasSelecionadas">
 			<div id="simplesContainer"></div>
 			<div id="complexasContainer"></div>
+		</div>
+	</div>
+
+	<!-- Assistências -->
+	<div class="coberturas-section">
+		<label for="assistenciaSelect">Assistências</label>
+		<select id="assistenciaSelect">
+			<option value="" disabled selected>Escolha uma assistência</option>
+			<option value="Martelinho de ouro">Martelinho de ouro</option>
+			<option value="Pequenos Reparos">Pequenos Reparos</option>
+			<option value="Parachoque/Pintura">Parachoque/Pintura</option>
+			<option value="Assistencia 24h">Assistência 24h</option>
+			<option value="Assistencia de Vidros">Assistência de Vidros</option>
+		</select>
+		<div id="assistenciasSelecionadas">
+			<div id="simplesAssistenciasContainer"></div>
+			<div id="complexasAssistenciasContainer"></div>
 		</div>
 	</div>
 
@@ -175,7 +193,7 @@ document.addEventListener("mousemove",e=>{
 document.getElementById("placa").addEventListener("input",function(){this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,7);});
 document.getElementById("ano").addEventListener("input",function(){this.value=this.value.replace(/[^0-9]/g,'').slice(0,4);});
 
-// Coberturas
+// --- Coberturas ---
 const selectCobertura=document.getElementById("coberturaSelect");
 const divSelecionadas=document.getElementById("coberturasSelecionadas");
 const simplesContainer=document.getElementById("simplesContainer");
@@ -230,7 +248,7 @@ function adicionarCobertura(v){
 			<option value="Medio">Médio</option>
 			<option value="Executivo">Executivo</option>`;
 		const inputDias=document.createElement("input");
-		inputDias.type="number";
+		inputDias.type = "number";
 		inputDias.placeholder="Dias";
 		inputDias.className="dias-reserva";
 		inputDias.dataset.cobertura=v;
@@ -239,8 +257,7 @@ function adicionarCobertura(v){
 		complexasContainer.appendChild(container);
 	}
 
-	badge.addEventListener("click",()=>{
-		removerCobertura(v);
+	badge.addEventListener("click",()=>{ removerCobertura(v);
 		if(v==="Danos Corporais" && coberturasEscolhidas.has("Danos Materiais")) removerCobertura("Danos Materiais");
 		if(v==="Danos Materiais" && coberturasEscolhidas.has("Danos Corporais")) removerCobertura("Danos Corporais");
 	});
@@ -264,10 +281,72 @@ selectCobertura.addEventListener("change",()=>{
 	selectCobertura.value="";
 });
 
-// ENVIO
-const successScreen=document.getElementById("successScreen");
-const resetFormButton=document.getElementById("resetFormButton");
+// --- Assistências ---
+const selectAssistencia = document.getElementById("assistenciaSelect");
+const simplesAssistenciasContainer = document.getElementById("simplesAssistenciasContainer");
+const complexasAssistenciasContainer = document.getElementById("complexasAssistenciasContainer");
+const assistenciasEscolhidas = new Set();
 
+const assistenciasSimples = ["Martelinho de ouro","Pequenos Reparos","Parachoque/Pintura"];
+const assistenciasComplexas = ["Assistencia 24h","Assistencia de Vidros"];
+
+function adicionarAssistencia(v){
+	if(assistenciasEscolhidas.has(v)) return;
+	assistenciasEscolhidas.add(v);
+
+	const badge = document.createElement("span");
+	badge.textContent = v+" ✖";
+	badge.className="coberturas-badge";
+	badge.dataset.valor=v;
+
+	if(assistenciasSimples.includes(v)) simplesAssistenciasContainer.appendChild(badge);
+	else complexasAssistenciasContainer.appendChild(badge);
+
+	if(v === "Assistencia 24h" || v === "Assistencia de Vidros"){
+		const container = document.createElement("div");
+		container.dataset.cobertura = v;
+
+		const selectNivel = document.createElement("select");
+		selectNivel.dataset.cobertura = v;
+		selectNivel.innerHTML = `<option value="" disabled selected>Nível</option>
+			<option value="Basico">Básico</option>
+			<option value="Completo">Completo</option>`;
+		container.appendChild(selectNivel);
+
+
+		selectNivel.addEventListener("change", ()=> {
+			if(selectNivel.value === "Completo"){
+				inputDetalhe.value = v === "Assistencia 24h" ? "Ilimitado" : "Completa";
+				inputDetalhe.readOnly = true;
+			} else { 
+				inputDetalhe.value = "";
+				inputDetalhe.placeholder = v === "Assistencia 24h" ? "Distância Máxima" : "Detalhes";
+				inputDetalhe.readOnly = false;
+			}
+		});
+
+		complexasAssistenciasContainer.appendChild(container);
+	}
+
+	badge.addEventListener("click", ()=>{ removerAssistencia(v); });
+}
+
+function removerAssistencia(v){
+	assistenciasEscolhidas.delete(v);
+	const badge = document.querySelector(`#assistenciasSelecionadas .coberturas-badge[data-valor="${v}"]`);
+	if(badge) badge.parentElement.removeChild(badge);
+	const extras = document.querySelectorAll(`#assistenciasSelecionadas [data-cobertura="${v}"]`);
+	extras.forEach(el=>el.parentElement.removeChild(el));
+}
+
+selectAssistencia.addEventListener("change", ()=>{
+	const valor = selectAssistencia.value;
+	if(!valor || assistenciasEscolhidas.has(valor)) return;
+	adicionarAssistencia(valor);
+	selectAssistencia.value="";
+});
+
+// ENVIO
 async function enviarFormulario(){
 	const vendedor=document.getElementById("vendedor").value;
 	const proposta=document.getElementById("proposta").value;
@@ -277,49 +356,25 @@ async function enviarFormulario(){
 	const ano=document.getElementById("ano").value;
 	const placa=document.getElementById("placa").value;
 
-	const coberturasArray=Array.from(coberturasEscolhidas).map(c=>{
-		const extras=divSelecionadas.querySelectorAll(`[data-cobertura="${c}"]`);
-		let detalhe={};
-		extras.forEach(el=>{
-			if(el.classList.contains("valor-extra")) detalhe.valor=el.value;
-			if(el.classList.contains("tipo-reserva")) detalhe.tipo=el.value;
-			if(el.classList.contains("dias-reserva")) detalhe.dias=el.value;
-		});
-		return {nome:c,...detalhe};
-	});
-
-	if(!vendedor||!proposta||!segurado||!modelo||!ano||!placa){
-		alert("Preencha todos os campos obrigatórios");
+	if(!vendedor || !proposta || !segurado || !modelo || !ano || !placa){
+		alert("Preencha todos os campos obrigatórios.");
 		return;
 	}
 
-	const dadosFormulario={vendedor,proposta,segurado,condutor2,modelo,ano,placa,coberturas:coberturasArray};
+	const data = {
+		vendedor, proposta, segurado, condutor2, modelo, ano, placa,
+		coberturas: Array.from(coberturasEscolhidas),
+		assistencias: Array.from(assistenciasEscolhidas)
+	};
 
-	try{
-		const response=await fetch("https://projeto1-n8n.khyklu.easypanel.host/webhook-test/db0338f3-a387-4a7a-8981-c17c540ed3ea",{
-			method:"POST",
-			headers:{"Content-Type":"application/json"},
-			body:JSON.stringify(dadosFormulario)
-		});
-		if(!response.ok) throw new Error("Erro ao enviar os dados");
-		successScreen.classList.remove("hidden");
-		resetFormButton.style.display="none";
-		setTimeout(()=>{
-			successScreen.classList.add("hidden");
-			resetFormButton.style.display="block";
-		},5000);
-	}catch(error){
-		alert("Falha ao enviar o formulário: "+error.message);
-	}
+	console.log("Dados enviados:", data);
+
+	document.getElementById("successScreen").classList.remove("hidden");
+	document.getElementById("resetFormButton").style.display="block";
 }
 
 function resetForm(){
-	document.querySelectorAll("input, select").forEach(el=>el.value="");
-	coberturasEscolhidas.clear();
-	simplesContainer.innerHTML="";
-	complexasContainer.innerHTML="";
-	successScreen.classList.add("hidden");
-	resetFormButton.style.display="none";
+	location.reload();
 }
 </script>
 </body>
