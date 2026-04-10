@@ -302,31 +302,54 @@ function adicionarAssistencia(v){
 	if(assistenciasSimples.includes(v)) simplesAssistenciasContainer.appendChild(badge);
 	else complexasAssistenciasContainer.appendChild(badge);
 
-	if(v === "Assistencia 24h" || v === "Assistencia de Vidros"){
-		const container = document.createElement("div");
-		container.dataset.cobertura = v;
+	if(v === "Assistencia 24h"){
+    const container = document.createElement("div");
+    container.dataset.cobertura = v;
 
-		const selectNivel = document.createElement("select");
-		selectNivel.dataset.cobertura = v;
-		selectNivel.innerHTML = `<option value="" disabled selected>Nível</option>
-			<option value="Basico">Básico</option>
-			<option value="Completo">Completo</option>`;
-		container.appendChild(selectNivel);
+    const selectNivel = document.createElement("select");
+    selectNivel.dataset.cobertura = v;
+    selectNivel.innerHTML = `
+        <option value="" disabled selected>Nível</option>
+        <option value="Basico">Básico</option>
+        <option value="Intermediario">Intermediário</option>
+        <option value="Completo">Completo</option>
+    `;
+    container.appendChild(selectNivel);
 
+    const inputDistancia = document.createElement("input");
+    inputDistancia.type = "number"; // só números
+    inputDistancia.placeholder = "Distância Máxima em Km";
+    inputDistancia.min = 0;
+    inputDistancia.dataset.cobertura = v;
+    container.appendChild(inputDistancia);
 
-		selectNivel.addEventListener("change", ()=> {
-			if(selectNivel.value === "Completo"){
-				inputDetalhe.value = v === "Assistencia 24h" ? "Ilimitado" : "Completa";
-				inputDetalhe.readOnly = true;
-			} else { 
-				inputDetalhe.value = "";
-				inputDetalhe.placeholder = v === "Assistencia 24h" ? "Distância Máxima" : "Detalhes";
-				inputDetalhe.readOnly = false;
-			}
-		});
+    selectNivel.addEventListener("change", () => {
+        if(selectNivel.value === "Completo"){
+            inputDistancia.value = "";
+            inputDistancia.readOnly = true;
+            inputDistancia.placeholder = "Ilimitado";
+        } else {
+            inputDistancia.value = "";
+            inputDistancia.readOnly = false;
+            inputDistancia.placeholder = "Distância Máxima em Km";
+        }
+    });
 
-		complexasAssistenciasContainer.appendChild(container);
-	}
+    complexasAssistenciasContainer.appendChild(container);
+}
+if(v === "Assistencia de Vidros") {
+	const container = document.createElement("div");
+	container.dataset.cobertura = v;
+
+	const selectNivel = document.createElement("select");
+	selectNivel.dataset.cobertura = v;
+	selectNivel.innerHTML = `<option value="" disabled selected>Nível</option>
+		<option value="Basico">Básico</option>
+		<option value="Completo">Completo</option>`;
+	container.appendChild(selectNivel);
+
+	complexasAssistenciasContainer.appendChild(container);
+}
 
 	badge.addEventListener("click", ()=>{ removerAssistencia(v); });
 }
@@ -369,10 +392,29 @@ async function enviarFormulario(){
 
 	console.log("Dados enviados:", data);
 
-	document.getElementById("successScreen").classList.remove("hidden");
+	// MOSTRAR TELA DE SUCESSO
+	const successScreen = document.getElementById("successScreen");
+	successScreen.classList.remove("hidden");
 	document.getElementById("resetFormButton").style.display="block";
-}
 
+	// TIMER PARA SUMIR A TELA (MAS O BOTÃO FICA)
+	setTimeout(() => {
+		successScreen.classList.add("hidden");
+	}, 5000);
+
+	// ENVIAR PARA O WEBHOOK DO N8N
+	const webhookURL = "https://projeto1-n8n.khyklu.easypanel.host/webhook-test/db0338f3-a387-4a7a-8981-c17c540ed3ea"; // Substitua pela URL real
+	try {
+		await fetch(webhookURL, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(data)
+		});
+		console.log("Dados enviados ao n8n com sucesso!");
+	} catch (err) {
+		console.error("Erro ao enviar para o webhook:", err);
+	}
+}
 function resetForm(){
 	location.reload();
 }
