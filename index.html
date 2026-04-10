@@ -6,7 +6,6 @@
 <title>Formulário ECO</title>
 
 <style>
-
 /* ===================== */
 /* VARIÁVEIS (CORES/TEMA) */
 /* ===================== */
@@ -53,7 +52,6 @@
 
 /* ===================== */
 /* BASE */
-/* ===================== */
 body {
 	font-family: Inter, sans-serif;
 	display: flex;
@@ -94,9 +92,7 @@ input, select {
 	box-sizing: border-box;
 }
 
-/* ===================== */
 /* SEGURADO + CONDUTOR */
-/* ===================== */
 .duo {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
@@ -104,7 +100,6 @@ input, select {
 	margin-top: 14px;
 }
 
-/* ===================== */
 /* VEÍCULO */
 .veiculo-grid {
 	display: grid;
@@ -119,7 +114,6 @@ input, select {
 	box-sizing: border-box;
 }
 
-/* ===================== */
 /* BOTÕES */
 button {
 	width: 100%;
@@ -141,7 +135,6 @@ button {
 	background: #165c2a;
 }
 
-/* ===================== */
 /* TOGGLE TEMA */
 .theme-toggle {
 	position: absolute;
@@ -155,9 +148,9 @@ button {
 	align-items: center;
 	justify-content: center;
 	cursor: pointer;
+	font-size: 18px;
 }
 
-/* ===================== */
 /* TELA DE SUCESSO */
 .success-screen {
 	position: fixed;
@@ -169,27 +162,26 @@ button {
 }
 
 .success-card {
-	background: white;
+	background: var(--color-card-bg);
 	padding: 30px;
 	border-radius: 14px;
 	text-align: center;
+	box-shadow: var(--shadow);
+	color: var(--color-text);
 }
 
 .hidden {
 	display: none;
 }
 
-/* ===================== */
 /* RESPONSIVO */
 @media (max-width: 480px) {
 	.duo, .veiculo-grid {
 		grid-template-columns: 1fr;
 	}
 }
-
 </style>
 </head>
-
 <body>
 
 <!-- FUNDO -->
@@ -198,7 +190,7 @@ button {
 <!-- TELA DE SUCESSO -->
 <div id="successScreen" class="success-screen hidden">
 	<div class="success-card">
-		<h2>Enviado com sucesso</h2>
+		<h2>Enviado com sucesso ✅</h2>
 		<button onclick="resetForm()">Preencher novamente</button>
 	</div>
 </div>
@@ -206,7 +198,7 @@ button {
 <!-- CARD PRINCIPAL -->
 <div class="card">
 
-	<button class="theme-toggle" onclick="toggleTheme()" id="themeBtn"></button>
+	<button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌞</button>
 
 	<img src="https://i.imgur.com/O8Bayp2.png" class="logo" />
 
@@ -245,15 +237,27 @@ button {
 </div>
 
 <script>
-
-/* TEMA (LIGHT/DARK) */
+// =====================
+// TEMA (LIGHT/DARK) com ícones
 function toggleTheme() {
 	const current = document.documentElement.getAttribute("data-theme");
-	const newTheme = current === "dark" ? "light" : "dark";
-	document.documentElement.setAttribute("data-theme", newTheme);
+	const themeBtn = document.getElementById("themeBtn");
+	if (current === "dark") {
+		document.documentElement.setAttribute("data-theme", "light");
+		themeBtn.textContent = "🌞";
+	} else {
+		document.documentElement.setAttribute("data-theme", "dark");
+		themeBtn.textContent = "🌙";
+	}
 }
 
-/* BLOBS */
+// Inicializa ícone do tema
+window.onload = () => {
+	const theme = document.documentElement.getAttribute("data-theme") || "light";
+	document.getElementById("themeBtn").textContent = theme === "dark" ? "🌙" : "🌞";
+};
+
+// BLOBS ANIMADOS
 const bg = document.getElementById("bg");
 for (let i = 0; i < 100; i++) {
 	const blob = document.createElement("div");
@@ -263,7 +267,7 @@ for (let i = 0; i < 100; i++) {
 	bg.appendChild(blob);
 }
 
-/* VALIDAÇÕES */
+// VALIDAÇÕES
 document.getElementById("placa").addEventListener("input", function(){
 	this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,7);
 });
@@ -272,27 +276,58 @@ document.getElementById("ano").addEventListener("input", function(){
 	this.value = this.value.replace(/[^0-9]/g,'').slice(0,4);
 });
 
-/* ENVIO */
+// =====================
+// ENVIO PARA N8N
 async function enviarFormulario() {
 	const vendedor = document.getElementById("vendedor").value;
 	const proposta = document.getElementById("proposta").value;
 	const segurado = document.getElementById("segurado").value;
+	const condutor2 = document.getElementById("condutor2").value;
 	const modelo = document.getElementById("modelo").value;
+	const ano = document.getElementById("ano").value;
+	const placa = document.getElementById("placa").value;
 
-	if (!vendedor || !proposta || !segurado || !modelo) {
-		alert("Preencha os campos obrigatórios");
+	if (!vendedor || !proposta || !segurado || !modelo || !ano || !placa) {
+		alert("Preencha todos os campos obrigatórios");
 		return;
 	}
 
-	document.getElementById("successScreen").classList.remove("hidden");
+	const dadosFormulario = {
+		vendedor,
+		proposta,
+		segurado,
+		condutor2,
+		modelo,
+		ano,
+		placa
+	};
+
+	try {
+		const response = await fetch("https://projeto1-n8n.khyklu.easypanel.host/webhook-test/db0338f3-a387-4a7a-8981-c17c540ed3ea", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify(dadosFormulario)
+		});
+
+		if (!response.ok) {
+			throw new Error("Erro ao enviar os dados");
+		}
+
+		// Mostrar tela de sucesso
+		document.getElementById("successScreen").classList.remove("hidden");
+
+	} catch (error) {
+		alert("Falha ao enviar o formulário: " + error.message);
+	}
 }
 
-/* RESET */
+// RESET FORMULÁRIO
 function resetForm() {
 	document.querySelectorAll("input, select").forEach(el => el.value = "");
 	document.getElementById("successScreen").classList.add("hidden");
 }
-
 </script>
 
 </body>
