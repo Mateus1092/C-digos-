@@ -26,7 +26,6 @@
 	--color-input-border: #2d3a34;
 }
 
-/* FUNDO */
 .background {
 	position: fixed;
 	inset: 0;
@@ -35,7 +34,6 @@
 	overflow: hidden;
 }
 
-/* BLOBS */
 .blob {
 	position: absolute;
 	width: 35px;
@@ -47,7 +45,6 @@
 	pointer-events: none;
 }
 
-/* BASE */
 body {
 	font-family: Inter, sans-serif;
 	display: flex;
@@ -56,7 +53,6 @@ body {
 	color: var(--color-text);
 }
 
-/* CARD */
 .card {
 	backdrop-filter: blur(14px);
 	background: rgba(255,255,255,0.85);
@@ -73,14 +69,12 @@ body {
 	background: rgba(15, 26, 21, 0.85);
 }
 
-/* LOGO */
 .logo {
 	max-width: 180px;
 	display: block;
 	margin: 0 auto 20px;
 }
 
-/* INPUTS */
 input, textarea, select {
 	width: 100%;
 	padding: 14px;
@@ -92,6 +86,12 @@ input, textarea, select {
 	font-family: inherit;
 }
 
+.veiculo-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 10px;
+}
+
 select option {
 	color: #000;
 }
@@ -101,7 +101,6 @@ select option {
 	background: #0f1a15;
 }
 
-/* BUTTON */
 button {
 	width: 100%;
 	height: 46px;
@@ -117,7 +116,6 @@ button {
 	color: white;
 }
 
-/* TOGGLE */
 .theme-toggle {
 	position: absolute;
 	top: 16px;
@@ -145,7 +143,6 @@ button {
 	height: 16px;
 }
 
-/* TELA DE SUCESSO */
 .success-screen {
 	position: fixed;
 	inset: 0;
@@ -193,7 +190,6 @@ button {
 
 <div class="background" id="bg"></div>
 
-<!-- TELA DE SUCESSO -->
 <div id="successScreen" class="success-screen hidden">
 	<div class="success-card">
 		<h2>Enviado com sucesso</h2>
@@ -209,7 +205,6 @@ button {
 
 	<h3>Preencha os dados</h3>
 
-	<!-- VENDEDOR -->
 	<select id="vendedor">
 		<option value="" disabled selected>Selecione o vendedor</option>
 		<option value="Inaia">Inaiá</option>
@@ -217,18 +212,22 @@ button {
 		<option value="Patricia">Patrícia</option>
 	</select>
 
-	<!-- PROPOSTA -->
 	<select id="proposta">
 		<option value="" disabled selected>Proposta comercial</option>
 		<option value="Allianz">Allianz</option>
 		<option value="Yelum">Yelum</option>
 	</select>
 
-	<!-- SEGURADO -->
 	<input type="text" id="segurado" placeholder="Nome do segurado">
 
-	<!-- 2 CONDUTOR -->
 	<input type="text" id="condutor2" placeholder="2° condutor (opcional)">
+
+	<!-- VEÍCULO -->
+	<div class="veiculo-grid">
+		<input type="text" id="modelo" placeholder="Modelo">
+		<input type="text" id="ano" placeholder="Ano">
+		<input type="text" id="placa" placeholder="Placa">
+	</div>
 
 	<button class="next" onclick="enviarFormulario()">Enviar</button>
 </div>
@@ -272,7 +271,6 @@ function updateIcon() {
 	updateIcon();
 })();
 
-/* BLOBS */
 const bg = document.getElementById("bg");
 for (let i = 0; i < 200; i++) {
 	const blob = document.createElement("div");
@@ -294,15 +292,17 @@ for (let i = 0; i < 200; i++) {
 	});
 }
 
-/* ENVIO */
 async function enviarFormulario() {
 	const vendedor = document.getElementById("vendedor").value;
 	const proposta = document.getElementById("proposta").value;
 	const segurado = document.getElementById("segurado").value;
-	const condutor2 = document.getElementById("condutor2").value;
+
+	const modelo = document.getElementById("modelo").value;
+	const ano = document.getElementById("ano").value;
+	const placa = document.getElementById("placa").value;
 
 	if (!vendedor || !proposta || !segurado) {
-		alert("Preencha todos os campos obrigatórios");
+		alert("Preencha os campos obrigatórios");
 		return;
 	}
 
@@ -313,7 +313,9 @@ async function enviarFormulario() {
 			vendedor,
 			proposta,
 			segurado,
-			condutor2
+			modelo,
+			ano,
+			placa
 		})
 	});
 
@@ -325,6 +327,9 @@ function resetForm() {
 	document.getElementById("proposta").value = "";
 	document.getElementById("segurado").value = "";
 	document.getElementById("condutor2").value = "";
+	document.getElementById("modelo").value = "";
+	document.getElementById("ano").value = "";
+	document.getElementById("placa").value = "";
 	document.getElementById("successScreen").classList.add("hidden");
 }
 </script>
