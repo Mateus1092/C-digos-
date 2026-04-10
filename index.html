@@ -80,8 +80,8 @@ body {
 	margin: 0 auto 20px;
 }
 
-/* SELECT */
-select {
+/* INPUTS */
+input, textarea, select {
 	width: 100%;
 	padding: 14px;
 	margin-top: 12px;
@@ -89,6 +89,7 @@ select {
 	border: 1px solid var(--color-input-border);
 	background: transparent;
 	color: var(--color-text);
+	font-family: inherit;
 }
 
 select option {
@@ -206,14 +207,28 @@ button {
 
 	<img src="https://i.imgur.com/O8Bayp2.png" class="logo" />
 
-	<h3>Selecionar vendedor</h3>
+	<h3>Preencha os dados</h3>
 
+	<!-- VENDEDOR -->
 	<select id="vendedor">
-		<option value="" disabled selected>Selecione</option>
+		<option value="" disabled selected>Selecione o vendedor</option>
 		<option value="Inaia">Inaiá</option>
 		<option value="Nicolas">Nicolas</option>
 		<option value="Patricia">Patrícia</option>
 	</select>
+
+	<!-- PROPOSTA -->
+	<select id="proposta">
+		<option value="" disabled selected>Proposta comercial</option>
+		<option value="Allianz">Allianz</option>
+		<option value="Yelum">Yelum</option>
+	</select>
+
+	<!-- SEGURADO -->
+	<input type="text" id="segurado" placeholder="Nome do segurado">
+
+	<!-- 2 CONDUTOR -->
+	<input type="text" id="condutor2" placeholder="2° condutor (opcional)">
 
 	<button class="next" onclick="enviarFormulario()">Enviar</button>
 </div>
@@ -282,13 +297,24 @@ for (let i = 0; i < 200; i++) {
 /* ENVIO */
 async function enviarFormulario() {
 	const vendedor = document.getElementById("vendedor").value;
+	const proposta = document.getElementById("proposta").value;
+	const segurado = document.getElementById("segurado").value;
+	const condutor2 = document.getElementById("condutor2").value;
 
-	if (!vendedor) return;
+	if (!vendedor || !proposta || !segurado) {
+		alert("Preencha todos os campos obrigatórios");
+		return;
+	}
 
 	await fetch("https://projeto1-n8n.khyklu.easypanel.host/webhook-test/db0338f3-a387-4a7a-8981-c17c540ed3ea", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({ vendedor })
+		body: JSON.stringify({
+			vendedor,
+			proposta,
+			segurado,
+			condutor2
+		})
 	});
 
 	document.getElementById("successScreen").classList.remove("hidden");
@@ -296,6 +322,9 @@ async function enviarFormulario() {
 
 function resetForm() {
 	document.getElementById("vendedor").value = "";
+	document.getElementById("proposta").value = "";
+	document.getElementById("segurado").value = "";
+	document.getElementById("condutor2").value = "";
 	document.getElementById("successScreen").classList.add("hidden");
 }
 </script>
