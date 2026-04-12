@@ -1,423 +1,754 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Formulário ECO</title>
-<style>
-:root {
-	--color-primary: #1f7a3a;
-	--color-background: #f6f8f7;
-	--color-card-bg: #ffffff;
-	--color-card-border: #e5e7eb;
-	--color-text: #1f2937;
-	--color-input-border: #d1d5db;
-	--radius: 14px;
-	--shadow: 0 15px 35px rgba(0,0,0,0.08);
-}
-[data-theme="dark"] {
-	--color-background: #0b1210;
-	--color-card-bg: #0f1a15;
-	--color-card-border: #1f2a24;
-	--color-text: #ecfdf5;
-	--color-input-border: #2d3a34;
-}
-body {
-	font-family: Inter, sans-serif;
-	display: flex;
-	justify-content: center;
-	padding: 60px 16px;
-	color: var(--color-text);
-	background: var(--color-background);
-	margin: 0;
-}
-.background { position: fixed; inset: 0; background: var(--color-background); z-index: -1; overflow: hidden; }
-.blob { position: absolute; width: 35px; height: 35px; background: rgba(31, 122, 58, 0.9); border-radius: 50%; filter: blur(2px); }
-.card { background: var(--color-card-bg); border: 1px solid var(--color-card-border); border-radius: var(--radius); padding: 36px 32px; max-width: 600px; width: 100%; box-shadow: var(--shadow); box-sizing: border-box; position: relative; }
-.logo { max-width: 180px; margin: 0 auto 20px; display: block; }
-input, select { width: 100%; padding: 14px; margin-top: 14px; border-radius: 10px; border: 1px solid var(--color-input-border); box-sizing: border-box; }
-.duo { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 14px; }
-.veiculo-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; margin-top: 14px; }
-.veiculo-grid input { margin-top: 0; min-width: 0; box-sizing: border-box; }
-button { width: 100%; height: 48px; margin-top: 24px; border-radius: 10px; border: none; cursor: pointer; font-weight: 600; transition: background 0.2s; }
-.next { background: var(--color-primary); color: white; }
-.next:hover { background: #165c2a; }
-.theme-toggle { position: absolute; top: 16px; right: 16px; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--color-card-border); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; }
-.success-screen { position: fixed; inset: 0; background: rgba(0,0,0,0.35); display: flex; align-items: center; justify-content: center; opacity: 1; pointer-events: auto; transition: opacity 0.5s ease; z-index: 9999; }
-.success-screen.hidden { opacity: 0; pointer-events: none; }
-.success-card { background: var(--color-card-bg); padding: 30px; border-radius: 14px; text-align: center; box-shadow: var(--shadow); color: var(--color-text); z-index: 10000; }
-.success-card button { margin-top: 20px; }
-#resetFormButton { display: none; margin-top: 20px; }
-.coberturas-section { margin-top: 14px; }
-.coberturas-section select { width: 100%; }
-.coberturas-badge { display: inline-block; background: #1f7a3a; color: white; padding: 4px 8px; border-radius: 8px; margin: 4px; cursor: pointer; }
-input.valor-extra { margin: 4px 0 8px 0; width: calc(100% - 10px); }
-.dias-reserva-container { display: flex; flex-wrap: wrap; margin-top: 4px; }
-select.tipo-reserva { width: 150px; margin-right: 8px; }
-input.dias-reserva { width: 80px; }
-#simplesContainer, #simplesAssistenciasContainer { margin-bottom: 6px; }
-#complexasContainer, #complexasAssistenciasContainer { margin-top: 4px; }
-@media (max-width: 480px) { .duo, .veiculo-grid { grid-template-columns: 1fr; } }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Formulário ECO — Responsivo</title>
+
+  <style>
+    /* =========================
+       Variáveis e temas
+       ========================= */
+    :root{
+      --color-primary:#1f7a3a;
+      --bg:#f6f8f7;
+      --card-bg:#fff;
+      --card-border:#e5e7eb;
+      --text:#1f2937;
+      --input-border:#d1d5db;
+      --radius:14px;
+      --shadow:0 15px 35px rgba(0,0,0,0.08);
+      --touch-size:48px;
+    }
+    [data-theme="dark"]{
+      --bg:#0b1210;
+      --card-bg:#0f1a15;
+      --card-border:#1f2a24;
+      --text:#ecfdf5;
+      --input-border:#2d3a34;
+    }
+
+    /* =========================
+       Layout geral
+       ========================= */
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:var(--text);background:var(--bg);}
+    .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 12px;box-sizing:border-box;}
+    .card{width:100%;max-width:920px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);position:relative;box-sizing:border-box;z-index:2;}
+
+    /* =========================
+       Form elements (touch friendly)
+       ========================= */
+    .logo{display:block;margin:0 auto 12px;max-width:160px;}
+    h1{font-size:1.1rem;margin:0 0 12px;text-align:center;}
+    label{display:block;margin-top:12px;font-weight:600;font-size:0.95rem;}
+    input[type="text"], input[type="date"], input[type="number"], select, button {
+      width:100%;
+      padding:12px 14px;
+      border-radius:10px;
+      border:1px solid var(--input-border);
+      box-sizing:border-box;
+      margin-top:8px;
+      font-size:1rem;
+    }
+    button { min-height: var(--touch-size); display:inline-flex; align-items:center; justify-content:center; gap:8px; }
+
+    .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+    .grid-3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;}
+    .actions{margin-top:18px;display:flex;flex-direction:row;gap:12px;align-items:center;}
+    button.primary{flex:1;background:var(--color-primary);color:#fff;border:none;padding:12px;border-radius:10px;font-weight:700;cursor:pointer;}
+    button.ghost{background:transparent;border:1px solid var(--card-border);padding:12px;border-radius:10px;cursor:pointer;}
+
+    /* Make reset button smaller than submit */
+    .actions .primary { flex: 1 1 auto; min-width: 0; }
+    .actions .ghost { flex: 0 0 160px; max-width: 160px; padding: 10px 12px; font-size: 0.95rem; }
+
+    /* =========================
+       Badges e containers dinâmicos
+       ========================= */
+    .badges{margin-top:8px;}
+    .badge{display:inline-block;background:var(--color-primary);color:#fff;padding:8px 12px;border-radius:999px;margin:6px 6px 6px 0;cursor:pointer;font-size:0.95rem;line-height:1;}
+    .small{font-size:0.85rem;}
+
+    /* wrapper para manter badge + campo juntos */
+    .cobertura-item, .assistencia-item {
+      display:flex;
+      gap:8px;
+      align-items:center;
+      margin-top:6px;
+      flex-wrap:wrap;
+    }
+    .cobertura-item .badge, .assistencia-item .badge { margin:0; }
+    .cobertura-item input, .assistencia-item input, .cobertura-item select { margin:0; }
+
+    /* Containers: simples inline; complexas em coluna (cada item em sua linha) */
+    #simplesContainer, #simplesAssistenciasContainer {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
+    }
+    #complexasContainer, #complexasAssistenciasContainer {
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    /* Vidros: badges inline */
+    #vidrosSelecionados {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
+      margin-top:6px;
+    }
+    #vidrosSelecionados .badge { margin:0; }
+
+    /* overlay de sucesso */
+    .overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.35);z-index:9999;visibility:hidden;opacity:0;transition:opacity .25s,visibility .25s;}
+    .overlay.show{visibility:visible;opacity:1;}
+    .overlay .card{max-width:420px;text-align:center;z-index:10000;}
+
+    /* =========================
+       BACKGROUND BLOBS (mobile-aware)
+       - z-index baixo para ficar atrás do card
+       - pointer-events none para não atrapalhar toques
+       - mix-blend-mode para melhor contraste
+       ========================= */
+    .background { position: fixed; inset: 0; background: transparent; z-index: 0; overflow: hidden; pointer-events: none; }
+    .blob { position: absolute; width: 30px; height: 30px; background: rgba(31,122,58,0.9); border-radius: 50%; filter: blur(2px); pointer-events: none; transition: transform 0.12s linear; will-change: transform; z-index: 0; mix-blend-mode: screen; opacity:0.95; }
+
+    /* =========================
+       Ajustes mobile (melhor leitura e toques)
+       ========================= */
+    @media (max-width: 720px) {
+      .card{padding:18px;border-radius:12px;}
+      .grid-2{grid-template-columns:1fr;gap:10px;}
+      .grid-3{grid-template-columns:1fr;gap:10px;}
+      .badge{padding:10px 14px;font-size:1rem;}
+      .cobertura-item, .assistencia-item { gap:10px; }
+      .actions{flex-direction:column;}
+      .actions .primary { width:100%; order:1; }
+      .actions .ghost { width:48%; max-width:none; align-self:flex-end; order:2; flex:0 0 auto; }
+      .logo{max-width:140px;}
+      h1{font-size:1rem;}
+    }
+
+    /* se o dispositivo tem ponteiro grosso (touch), reduz efeitos e blobs */
+    @media (pointer: coarse) {
+      .blob { filter: blur(1.5px); opacity:0.9; }
+    }
+  </style>
 </head>
 <body>
-<div class="background" id="bg"></div>
 
-<div id="successScreen" class="success-screen hidden">
-	<div class="success-card">
-		<h2>Enviado com sucesso ✅</h2>
-		<button onclick="resetForm()">Preencher novamente</button>
-	</div>
-</div>
+  <!-- BACKGROUND BLOBS -->
+  <div class="background" id="bg"></div>
 
-<div class="card">
-	<button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌞</button>
-	<img src="https://i.imgur.com/O8Bayp2.png" class="logo" />
-	<h3>Preencha os dados</h3>
+  <div class="wrap">
+    <div class="card" id="appCard" data-theme="light">
+      <button id="themeToggle" title="Alternar tema" style="position:absolute;right:12px;top:12px;border-radius:50%;width:40px;height:40px;border:1px solid var(--card-border);background:transparent;cursor:pointer">🌞</button>
 
-	<select id="vendedor">
-		<option value="" disabled selected>Selecione o vendedor</option>
-		<option>Inaiá</option>
-		<option>Nicolas</option>
-		<option>Patrícia</option>
-	</select>
+      <img class="logo" src="https://i.imgur.com/O8Bayp2.png" alt="Logo" />
+      <h1>Preencha os dados</h1>
 
-	<select id="proposta">
-		<option value="" disabled selected>Proposta comercial</option>
-		<option>Allianz</option>
-		<option>Yelum</option>
-	</select>
+      <form id="mainForm" novalidate>
+        <label for="vendedor">Vendedor</label>
+        <select id="vendedor" name="vendedor" required>
+          <option value="" disabled selected>Selecione o vendedor</option>
+          <option>Inaiá</option>
+          <option>Nicolas</option>
+          <option>Patrícia</option>
+        </select>
 
-	<div class="duo">
-		<input id="segurado" placeholder="Nome do segurado">
-		<input id="condutor2" placeholder="2° condutor (opcional)">
-	</div>
+        <label for="cidade">Cidade</label>
+        <select id="cidade" name="cidade" required>
+          <option value="" disabled selected>Selecione a Cidade</option>
+          <option>Taubaté</option>
+          <option>São Sebastião</option>
+          <option>Lorena</option>
+        </select>
 
-	<div class="veiculo-grid">
-		<input id="modelo" placeholder="Modelo do veículo">
-		<input id="ano" placeholder="Ano" maxlength="4">
-		<input id="placa" placeholder="Placa" maxlength="7">
-	</div>
+        <label for="proposta">Proposta comercial</label>
+        <select id="proposta" name="proposta" required>
+          <option value="" disabled selected>Proposta comercial</option>
+          <option>Allianz</option>
+          <option>Yelum</option>
+        </select>
 
-	<!-- Coberturas -->
-	<div class="coberturas-section">
-		<label for="coberturaSelect">Coberturas</label>
-		<select id="coberturaSelect">
-			<option value="" disabled selected>Escolha uma cobertura</option>
-			<option value="Roubo/Furto">Roubo/Furto</option>
-			<option value="PT">PT</option>
-			<option value="Compreensiva">Compreensiva</option>
-			<option value="Danos Morais">Danos Morais</option>
-			<option value="Danos Materiais">Danos Materiais</option>
-			<option value="Danos Corporais">Danos Corporais</option>
-			<option value="Custo de Defesa">Custo de Defesa</option>
-			<option value="Despesa Extraordinária">Despesa Extraordinária</option>
-			<option value="Carro Reserva">Carro Reserva</option>
-		</select>
-		<div id="coberturasSelecionadas">
-			<div id="simplesContainer"></div>
-			<div id="complexasContainer"></div>
-		</div>
-	</div>
+        <div class="grid-2">
+          <div>
+            <label for="segurado">Nome do segurado</label>
+            <input id="segurado" name="segurado" type="text" placeholder="Nome do segurado" required />
+          </div>
+          <div>
+            <label for="condutor2">2° condutor (opcional)</label>
+            <input id="condutor2" name="condutor2" type="text" placeholder="2° condutor (opcional)" />
+          </div>
+        </div>
 
-	<!-- Assistências -->
-	<div class="coberturas-section">
-		<label for="assistenciaSelect">Assistências</label>
-		<select id="assistenciaSelect">
-			<option value="" disabled selected>Escolha uma assistência</option>
-			<option value="Martelinho de ouro">Martelinho de ouro</option>
-			<option value="Pequenos Reparos">Pequenos Reparos</option>
-			<option value="Parachoque/Pintura">Parachoque/Pintura</option>
-			<option value="Assistencia 24h">Assistência 24h</option>
-			<option value="Assistencia de Vidros">Assistência de Vidros</option>
-		</select>
-		<div id="assistenciasSelecionadas">
-			<div id="simplesAssistenciasContainer"></div>
-			<div id="complexasAssistenciasContainer"></div>
-		</div>
-	</div>
+        <div class="grid-3">
+          <div>
+            <label for="modelo">Modelo do veículo</label>
+            <input id="modelo" name="modelo" type="text" placeholder="Modelo do veículo" required />
+          </div>
+          <div>
+            <label for="ano">Ano</label>
+            <input id="ano" name="ano" type="text" maxlength="4" placeholder="Ano" required />
+          </div>
+          <div>
+            <label for="placa">Placa</label>
+            <input id="placa" name="placa" type="text" maxlength="7" placeholder="Placa" required />
+          </div>
+        </div>
 
-	<button class="next" onclick="enviarFormulario()">Enviar</button>
-	<button id="resetFormButton" class="next" onclick="resetForm()">Preencher novamente</button>
-</div>
+        <div style="margin-top:12px;">
+          <label for="franquia">Franquia</label>
+          <input id="franquia" name="franquia" type="text" placeholder="R$ 0,00" required />
 
-<script>
-// Toggle tema
-function toggleTheme() {
-	const current = document.documentElement.getAttribute("data-theme");
-	const themeBtn = document.getElementById("themeBtn");
-	if(current==="dark"){document.documentElement.setAttribute("data-theme","light"); themeBtn.textContent="🌞";}
-	else{document.documentElement.setAttribute("data-theme","dark"); themeBtn.textContent="🌙";}
-}
-window.onload = () => {
-	const theme = document.documentElement.getAttribute("data-theme")||"light";
-	document.getElementById("themeBtn").textContent = theme==="dark"?"🌙":"🌞";
-};
+          <label for="formaPagamento">Forma de pagamento</label>
+          <select id="formaPagamento" name="formaPagamento" required>
+            <option value="" disabled selected>Selecione</option>
+            <option value="credito">Cartão de Crédito</option>
+            <option value="debito">Cartão de Débito</option>
+            <option value="boleto">Boleto</option>
+            <option value="pix">Pix</option>
+          </select>
 
-// BLOBS
-const bg = document.getElementById("bg");
-const blobs=[];
-for(let i=0;i<400;i++){
-	const blob=document.createElement("div");
-	blob.className="blob";
-	const x=Math.random()*window.innerWidth;
-	const y=Math.random()*window.innerHeight;
-	blob.style.left=x+"px";
-	blob.style.top=y+"px";
-	blob.dataset.ox=x;
-	blob.dataset.oy=y;
-	bg.appendChild(blob);
-	blobs.push(blob);
-}
-document.addEventListener("mousemove",e=>{
-	const mx=e.clientX;
-	const my=e.clientY;
-	blobs.forEach(blob=>{
-		const ox=parseFloat(blob.dataset.ox);
-		const oy=parseFloat(blob.dataset.oy);
-		const dx=mx-ox;
-		const dy=my-oy;
-		const dist=Math.sqrt(dx*dx+dy*dy);
-		const maxDist=150;
-		if(dist<maxDist){
-			const force=(maxDist-dist)/maxDist*30;
-			const angle=Math.atan2(dy,dx);
-			blob.style.transform=`translate(${-Math.cos(angle)*force}px, ${-Math.sin(angle)*force}px)`;
-		}else{
-			blob.style.transform="translate(0,0)";
-		}
-	});
-});
+          <div id="parcelasContainer" style="display:none;margin-top:8px;">
+            <label for="parcelas">Parcelas</label>
+            <select id="parcelas" name="parcelas">
+              <option value="" disabled selected>Selecione parcelas</option>
+              <option>1x</option><option>2x</option><option>3x</option><option>4x</option>
+              <option>5x</option><option>6x</option><option>7x</option><option>8x</option>
+              <option>9x</option><option>10x</option><option>11x</option><option>12x</option>
+            </select>
+          </div>
 
-// Validações
-document.getElementById("placa").addEventListener("input",function(){this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,7);});
-document.getElementById("ano").addEventListener("input",function(){this.value=this.value.replace(/[^0-9]/g,'').slice(0,4);});
+          <label for="validadeOrcamento">Validade do orçamento</label>
+          <input id="validadeOrcamento" name="validadeOrcamento" type="date" required />
+        </div>
 
-// --- Coberturas ---
-const selectCobertura=document.getElementById("coberturaSelect");
-const divSelecionadas=document.getElementById("coberturasSelecionadas");
-const simplesContainer=document.getElementById("simplesContainer");
-const complexasContainer=document.getElementById("complexasContainer");
-const coberturasEscolhidas=new Set();
+        <!-- Coberturas -->
+        <div style="margin-top:12px;">
+          <label for="coberturaSelect">Coberturas</label>
+          <select id="coberturaSelect">
+            <option value="" disabled selected>Escolha uma cobertura</option>
+            <option value="Roubo/Furto">Roubo/Furto</option>
+            <option value="Perda Total">Perda Total</option>
+            <option value="Compreensiva">Compreensiva</option>
+            <option value="RCFV">RCFV</option>
+            <option value="Danos Morais">Danos Morais</option>
+            <option value="Danos Materiais">Danos Materiais</option>
+            <option value="Danos Corporais">Danos Corporais</option>
+            <option value="Custo de Defesa">Custo de Defesa</option>
+            <option value="Despesa Extraordinária">Despesa Extraordinária</option>
+            <option value="Carro Reserva">Carro Reserva</option>
+          </select>
 
-const coberturasSimples=["Roubo/Furto","PT","Compreensiva"];
-const coberturasComplexas=["Danos Morais","Danos Materiais","Danos Corporais","Custo de Defesa","Despesa Extraordinária"];
-const coberturaCarroReserva="Carro Reserva";
+          <div class="badges" id="coberturasSelecionadas">
+            <div id="simplesContainer"></div>
+            <div id="complexasContainer"></div>
+          </div>
+        </div>
 
-// Máscara reais
-function mascaraReaisInteligente(event){
-	const input=event.target;
-	let valor=input.value.replace(/\D/g,"");
-	if(valor===""){input.value="";return;}
-	valor=(parseInt(valor,10)/100).toFixed(2);
-	valor=valor.replace(".",",").replace(/\B(?=(\d{3})+(?!\d))/g,".");
-	input.value="R$ "+valor;
-}
+        <!-- Assistências -->
+        <div style="margin-top:12px;">
+          <label for="assistenciaSelect">Assistências</label>
+          <select id="assistenciaSelect">
+            <option value="" disabled selected>Escolha uma assistência</option>
+            <option value="Martelinho de ouro">Martelinho de ouro</option>
+            <option value="Pequenos Reparos">Pequenos Reparos</option>
+            <option value="Parachoque/Pintura">Parachoque/Pintura</option>
+          </select>
 
-// Adicionar cobertura
-function adicionarCobertura(v){
-	if(coberturasEscolhidas.has(v)) return;
-	coberturasEscolhidas.add(v);
+          <div class="badges" id="assistenciasSelecionadas">
+            <div id="simplesAssistenciasContainer"></div>
+            <div id="complexasAssistenciasContainer"></div>
+          </div>
+        </div>
 
-	const badge=document.createElement("span");
-	badge.textContent=v+" ✖";
-	badge.className="coberturas-badge";
-	badge.dataset.valor=v;
+        <!-- Assistência de Vidros (separada) -->
+        <div style="margin-top:12px;">
+          <label for="vidrosSelect">Assistência de Vidros</label>
+          <select id="vidrosSelect">
+            <option value="" disabled selected>Escolha uma opção</option>
+            <option value="Para-brisa">Para-brisa</option>
+            <option value="Laterais">Laterais</option>
+            <option value="Traseiro">Traseiro</option>
+            <option value="Farol">Farol</option>
+            <option value="Lanterna">Lanterna</option>
+            <option value="Retrovisores">Retrovisores</option>
+          </select>
+          <div id="vidrosSelecionados"></div>
+        </div>
 
-	if(coberturasSimples.includes(v)) simplesContainer.appendChild(badge);
-	else complexasContainer.appendChild(badge);
+        <!-- Assistência 24h -->
+        <div style="margin-top:12px;">
+          <label>Assistência 24h</label>
+          <div id="assistencia24hContainer"></div>
+        </div>
 
-	if(coberturasComplexas.includes(v) && v!==coberturaCarroReserva){
-		const inputExtra=document.createElement("input");
-		inputExtra.placeholder="Valor em R$";
-		inputExtra.dataset.cobertura=v;
-		inputExtra.className="valor-extra";
-		inputExtra.addEventListener("input",mascaraReaisInteligente);
-		complexasContainer.appendChild(inputExtra);
-	}
+        <!-- Ações -->
+        <div class="actions">
+          <button type="button" class="primary" id="btnEnviar">Enviar</button>
+          <button type="button" class="ghost" id="btnReset">Preencher novamente</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-	if(v===coberturaCarroReserva){
-		const container=document.createElement("div");
-		container.className="dias-reserva-container";
-		container.dataset.cobertura=v;
-		const selectExtra=document.createElement("select");
-		selectExtra.className="tipo-reserva";
-		selectExtra.dataset.cobertura=v;
-		selectExtra.innerHTML=`<option value="" disabled selected>Tipo</option>
-			<option value="Basico">Básico</option>
-			<option value="Medio">Médio</option>
-			<option value="Executivo">Executivo</option>`;
-		const inputDias=document.createElement("input");
-		inputDias.type = "number";
-		inputDias.placeholder="Dias";
-		inputDias.className="dias-reserva";
-		inputDias.dataset.cobertura=v;
-		container.appendChild(selectExtra);
-		container.appendChild(inputDias);
-		complexasContainer.appendChild(container);
-	}
+  <!-- Success overlay -->
+  <div class="overlay" id="successOverlay" aria-hidden="true">
+    <div class="card">
+      <h2>Enviado com sucesso ✅</h2>
+      <p class="small">Os dados foram enviados com sucesso.</p>
+      <div style="margin-top:12px;">
+        <button class="primary" id="overlayClose">Fechar</button>
+      </div>
+    </div>
+  </div>
 
-	badge.addEventListener("click",()=>{ removerCobertura(v);
-		if(v==="Danos Corporais" && coberturasEscolhidas.has("Danos Materiais")) removerCobertura("Danos Materiais");
-		if(v==="Danos Materiais" && coberturasEscolhidas.has("Danos Corporais")) removerCobertura("Danos Corporais");
-	});
-}
+  <script>
+    /* =========================
+       Seletores e elementos
+       ========================= */
+    const $ = s => document.querySelector(s);
+    const bg = $('#bg');
+    const themeToggle = $('#themeToggle');
+    const vendedor = $('#vendedor');
+    const cidade = $('#cidade');
+    const proposta = $('#proposta');
+    const segurado = $('#segurado');
+    const condutor2 = $('#condutor2');
+    const modelo = $('#modelo');
+    const ano = $('#ano');
+    const placa = $('#placa');
+    const franquia = $('#franquia');
+    const formaPagamento = $('#formaPagamento');
+    const parcelas = $('#parcelas');
+    const parcelasContainer = $('#parcelasContainer');
+    const validadeOrcamento = $('#validadeOrcamento');
+    const coberturaSelect = $('#coberturaSelect');
+    const simplesContainer = $('#simplesContainer');
+    const complexasContainer = $('#complexasContainer');
+    const assistenciaSelect = $('#assistenciaSelect');
+    const simplesAssistenciasContainer = $('#simplesAssistenciasContainer');
+    const complexasAssistenciasContainer = $('#complexasAssistenciasContainer');
+    const vidrosSelect = $('#vidrosSelect');
+    const vidrosSelecionados = $('#vidrosSelecionados');
+    const assistencia24hContainer = $('#assistencia24hContainer');
+    const btnEnviar = $('#btnEnviar');
+    const btnReset = $('#btnReset');
+    const successOverlay = $('#successOverlay');
+    const overlayClose = $('#overlayClose');
 
-// Remover cobertura
-function removerCobertura(v){
-	coberturasEscolhidas.delete(v);
-	const badge=document.querySelector(`.coberturas-badge[data-valor="${v}"]`);
-	if(badge) badge.parentElement.removeChild(badge);
-	const extras=document.querySelectorAll(`[data-cobertura="${v}"]`);
-	extras.forEach(el=>el.parentElement.removeChild(el));
-}
+    /* =========================
+       Estado
+       ========================= */
+    const state = {
+      coberturasEscolhidas: new Set(),
+      assistenciasEscolhidas: new Set(),
+      vidrosEscolhidos: new Set()
+    };
 
-selectCobertura.addEventListener("change",()=>{
-	const valor=selectCobertura.value;
-	if(!valor || coberturasEscolhidas.has(valor)) return;
-	adicionarCobertura(valor);
-	if(valor==="Danos Corporais") adicionarCobertura("Danos Materiais");
-	if(valor==="Danos Materiais") adicionarCobertura("Danos Corporais");
-	selectCobertura.value="";
-});
+    /* =========================
+       Utilitários
+       ========================= */
+    function createBadge(text, key){
+      const span = document.createElement('span');
+      span.className = 'badge';
+      span.textContent = text + ' ✖';
+      if(key) span.dataset.valor = key;
+      return span;
+    }
+    function formatBRLFromDigits(digits){
+      if(!digits) return '';
+      const n = Number(digits) / 100;
+      return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
 
-// --- Assistências ---
-const selectAssistencia = document.getElementById("assistenciaSelect");
-const simplesAssistenciasContainer = document.getElementById("simplesAssistenciasContainer");
-const complexasAssistenciasContainer = document.getElementById("complexasAssistenciasContainer");
-const assistenciasEscolhidas = new Set();
+    /* =========================
+       Inicialização
+       - aplica tema salvo
+       - máscaras
+       - blobs adaptativos
+       ========================= */
+    (function init(){
+      // aplicar tema salvo
+      const savedTheme = localStorage.getItem('eco_theme');
+      if(savedTheme === 'dark' || savedTheme === 'light'){
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+      themeToggle.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '🌙' : '🌞';
 
-const assistenciasSimples = ["Martelinho de ouro","Pequenos Reparos","Parachoque/Pintura"];
-const assistenciasComplexas = ["Assistencia 24h","Assistencia de Vidros"];
+      // data mínima
+      const hoje = new Date().toISOString().split('T')[0];
+      validadeOrcamento.setAttribute('min', hoje);
 
-function adicionarAssistencia(v){
-	if(assistenciasEscolhidas.has(v)) return;
-	assistenciasEscolhidas.add(v);
+      // máscaras
+      placa.addEventListener('input', e => e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,7), {passive:true});
+      ano.addEventListener('input', e => e.target.value = e.target.value.replace(/[^0-9]/g,'').slice(0,4), {passive:true});
+      franquia.addEventListener('input', e => {
+        let v = e.target.value.replace(/\D/g,'');
+        e.target.value = v ? formatBRLFromDigits(v) : '';
+      }, {passive:false});
 
-	const badge = document.createElement("span");
-	badge.textContent = v+" ✖";
-	badge.className="coberturas-badge";
-	badge.dataset.valor=v;
+      formaPagamento.addEventListener('change', () => {
+        if(formaPagamento.value === 'credito') parcelasContainer.style.display = 'block';
+        else { parcelasContainer.style.display = 'none'; if(parcelas) parcelas.value = ''; }
+      }, {passive:true});
 
-	if(assistenciasSimples.includes(v)) simplesAssistenciasContainer.appendChild(badge);
-	else complexasAssistenciasContainer.appendChild(badge);
+      // limpar estilos de erro
+      ['vendedor','cidade','proposta','segurado','modelo','ano','placa','franquia','formaPagamento','validadeOrcamento'].forEach(id => {
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.addEventListener('input', () => { el.style.border=''; el.style.boxShadow=''; }, {passive:true});
+      });
+      if(parcelas) parcelas.addEventListener('change', () => { parcelas.style.border=''; parcelas.style.boxShadow=''; }, {passive:true});
 
-	if(v === "Assistencia 24h"){
-    const container = document.createElement("div");
-    container.dataset.cobertura = v;
+      // criar assistencia 24h
+      buildAssistencia24h();
 
-    const selectNivel = document.createElement("select");
-    selectNivel.dataset.cobertura = v;
-    selectNivel.innerHTML = `
-        <option value="" disabled selected>Nível</option>
-        <option value="Basico">Básico</option>
-        <option value="Intermediario">Intermediário</option>
-        <option value="Completo">Completo</option>
-    `;
-    container.appendChild(selectNivel);
+      // inicializar blobs com sensibilidade a mobile
+      initBlobs();
 
-    const inputDistancia = document.createElement("input");
-    inputDistancia.type = "number"; // só números
-    inputDistancia.placeholder = "Distância Máxima em Km";
-    inputDistancia.min = 0;
-    inputDistancia.dataset.cobertura = v;
-    container.appendChild(inputDistancia);
+      // handlers
+      themeToggle.addEventListener('click', toggleTheme);
+    })();
 
-    selectNivel.addEventListener("change", () => {
-        if(selectNivel.value === "Completo"){
-            inputDistancia.value = "";
-            inputDistancia.readOnly = true;
-            inputDistancia.placeholder = "Ilimitado";
-        } else {
-            inputDistancia.value = "";
-            inputDistancia.readOnly = false;
-            inputDistancia.placeholder = "Distância Máxima em Km";
-        }
+    /* =========================
+       Coberturas
+       - pares: Danos Materiais <-> Danos Corporais
+       - simples inline; complexas em linha própria
+       ========================= */
+    const COBERTURAS = {
+      simples: ['Roubo/Furto','Perda Total','Compreensiva'],
+      complexas: ['Danos Morais','Danos Materiais','RCFV','Danos Corporais','Custo de Defesa','Despesa Extraordinária'],
+      carroReserva: 'Carro Reserva',
+      pares: [['Danos Materiais','Danos Corporais']]
+    };
+
+    coberturaSelect.addEventListener('change', () => {
+      const v = coberturaSelect.value;
+      if(!v) return;
+      if(state.coberturasEscolhidas.has(v)) { coberturaSelect.value = ''; return; }
+      const par = findParQueContem(v);
+      if(par){
+        par.forEach(item => { if(!state.coberturasEscolhidas.has(item)) addCobertura(item); });
+      } else {
+        addCobertura(v);
+      }
+      coberturaSelect.value = '';
     });
 
-    complexasAssistenciasContainer.appendChild(container);
-}
-if(v === "Assistencia de Vidros") {
-	const container = document.createElement("div");
-	container.dataset.cobertura = v;
+    function findParQueContem(valor){
+      for(const p of COBERTURAS.pares) if(p.includes(valor)) return p;
+      return null;
+    }
 
-	const selectNivel = document.createElement("select");
-	selectNivel.dataset.cobertura = v;
-	selectNivel.innerHTML = `<option value="" disabled selected>Nível</option>
-		<option value="Basico">Básico</option>
-		<option value="Completo">Completo</option>`;
-	container.appendChild(selectNivel);
+    function addCobertura(v){
+      if(state.coberturasEscolhidas.has(v)) return;
+      state.coberturasEscolhidas.add(v);
 
-	complexasAssistenciasContainer.appendChild(container);
-}
+      const wrapper = document.createElement('div');
+      wrapper.className = 'cobertura-item';
+      wrapper.dataset.valor = v;
 
-	badge.addEventListener("click", ()=>{ removerAssistencia(v); });
-}
+      const badge = createBadge(v, v);
+      wrapper.appendChild(badge);
 
-function removerAssistencia(v){
-	assistenciasEscolhidas.delete(v);
-	const badge = document.querySelector(`#assistenciasSelecionadas .coberturas-badge[data-valor="${v}"]`);
-	if(badge) badge.parentElement.removeChild(badge);
-	const extras = document.querySelectorAll(`#assistenciasSelecionadas [data-cobertura="${v}"]`);
-	extras.forEach(el=>el.parentElement.removeChild(el));
-}
+      if(COBERTURAS.simples.includes(v)){
+        simplesContainer.appendChild(wrapper);
+      } else {
+        if(COBERTURAS.complexas.includes(v) && v !== COBERTURAS.carroReserva){
+          const inputExtra = document.createElement('input');
+          inputExtra.placeholder = 'Valor em R$';
+          inputExtra.dataset.cobertura = v;
+          inputExtra.className = 'small';
+          inputExtra.style.minWidth = '140px';
+          inputExtra.addEventListener('input', e => {
+            let digits = e.target.value.replace(/\D/g,'');
+            e.target.value = digits ? formatBRLFromDigits(digits) : '';
+          }, {passive:false});
+          wrapper.appendChild(inputExtra);
+        }
+        if(v === COBERTURAS.carroReserva){
+          const selectTipo = document.createElement('select');
+          selectTipo.innerHTML = '<option value="" disabled selected>Tipo</option><option value="Basico">Básico</option><option value="Medio">Médio</option><option value="Executivo">Executivo</option>';
+          selectTipo.style.minWidth = '140px';
+          const inputDias = document.createElement('input');
+          inputDias.type = 'number';
+          inputDias.placeholder = 'Dias';
+          inputDias.style.width = '90px';
+          wrapper.appendChild(selectTipo);
+          wrapper.appendChild(inputDias);
+        }
+        complexasContainer.appendChild(wrapper);
+      }
 
-selectAssistencia.addEventListener("change", ()=>{
-	const valor = selectAssistencia.value;
-	if(!valor || assistenciasEscolhidas.has(valor)) return;
-	adicionarAssistencia(valor);
-	selectAssistencia.value="";
-});
+      badge.addEventListener('click', () => {
+        const par = findParQueContem(v);
+        if(par) par.forEach(item => removeCobertura(item));
+        else removeCobertura(v);
+      });
+    }
 
-// ENVIO
-async function enviarFormulario(){
-	const vendedor=document.getElementById("vendedor").value;
-	const proposta=document.getElementById("proposta").value;
-	const segurado=document.getElementById("segurado").value;
-	const condutor2=document.getElementById("condutor2").value;
-	const modelo=document.getElementById("modelo").value;
-	const ano=document.getElementById("ano").value;
-	const placa=document.getElementById("placa").value;
+    function removeCobertura(v){
+      if(!state.coberturasEscolhidas.has(v)) return;
+      state.coberturasEscolhidas.delete(v);
+      const wrapper = document.querySelector(`.cobertura-item[data-valor="${v}"]`);
+      if(wrapper) wrapper.remove();
+      const extras = document.querySelectorAll(`[data-cobertura="${v}"]`);
+      extras.forEach(el => el.remove());
+      const par = findParQueContem(v);
+      if(par) par.forEach(item => { if(state.coberturasEscolhidas.has(item)) removeCobertura(item); });
+    }
 
-	if(!vendedor || !proposta || !segurado || !modelo || !ano || !placa){
-		alert("Preencha todos os campos obrigatórios.");
-		return;
-	}
+    /* =========================
+       Assistências e Vidros
+       ========================= */
+    const ASSISTENCIAS = { simples: ['Martelinho de ouro','Pequenos Reparos','Parachoque/Pintura'], complexas: ['Assistencia de Vidros'] };
 
-	const data = {
-		vendedor, proposta, segurado, condutor2, modelo, ano, placa,
-		coberturas: Array.from(coberturasEscolhidas),
-		assistencias: Array.from(assistenciasEscolhidas)
-	};
+    assistenciaSelect.addEventListener('change', () => {
+      const v = assistenciaSelect.value;
+      if(!v) return;
+      if(state.assistenciasEscolhidas.has(v)) { assistenciaSelect.value = ''; return; }
+      addAssistencia(v);
+      assistenciaSelect.value = '';
+    });
 
-	console.log("Dados enviados:", data);
+    function addAssistencia(v){
+      if(state.assistenciasEscolhidas.has(v)) return;
+      state.assistenciasEscolhidas.add(v);
+      const wrapper = document.createElement('div');
+      wrapper.className = 'assistencia-item';
+      wrapper.dataset.valor = v;
+      const badge = createBadge(v, v);
+      wrapper.appendChild(badge);
+      if(v === 'Assistencia de Vidros'){
+        const itens = ['Para-brisa','Laterais','Traseiro','Farol','Lanterna','Retrovisores'];
+        const container = document.createElement('div');
+        container.style.display = 'flex';
+        container.style.flexDirection = 'column';
+        container.style.gap = '4px';
+        itens.forEach(item => {
+          const label = document.createElement('label');
+          label.style.display = 'block';
+          label.style.marginTop = '4px';
+          const cb = document.createElement('input');
+          cb.type = 'checkbox';
+          cb.value = item;
+          cb.dataset.cobertura = v;
+          cb.addEventListener('change', () => {
+            if(cb.checked) state.assistenciasEscolhidas.add(item);
+            else state.assistenciasEscolhidas.delete(item);
+          }, {passive:true});
+          label.appendChild(cb);
+          label.appendChild(document.createTextNode(' ' + item));
+          container.appendChild(label);
+        });
+        wrapper.appendChild(container);
+        complexasAssistenciasContainer.appendChild(wrapper);
+      } else {
+        simplesAssistenciasContainer.appendChild(wrapper);
+      }
+      badge.addEventListener('click', () => removeAssistencia(v));
+    }
 
-	// MOSTRAR TELA DE SUCESSO
-	const successScreen = document.getElementById("successScreen");
-	successScreen.classList.remove("hidden");
-	document.getElementById("resetFormButton").style.display="block";
+    function removeAssistencia(v){
+      state.assistenciasEscolhidas.delete(v);
+      const wrapper = document.querySelector(`.assistencia-item[data-valor="${v}"]`);
+      if(wrapper) wrapper.remove();
+      const extras = document.querySelectorAll(`[data-cobertura="${v}"]`);
+      extras.forEach(el => el.remove());
+    }
 
-	// TIMER PARA SUMIR A TELA (MAS O BOTÃO FICA)
-	setTimeout(() => {
-		successScreen.classList.add("hidden");
-	}, 5000);
+    // VIDROS: badges inline no container #vidrosSelecionados
+    vidrosSelect.addEventListener('change', () => {
+      const v = vidrosSelect.value;
+      if(!v) return;
+      if(state.vidrosEscolhidos.has(v)) { vidrosSelect.value = ''; return; }
+      state.vidrosEscolhidos.add(v);
 
-	// ENVIAR PARA O WEBHOOK DO N8N
-	const webhookURL = "https://projeto1-n8n.khyklu.easypanel.host/webhook-test/db0338f3-a387-4a7a-8981-c17c540ed3ea"; // Substitua pela URL real
-	try {
-		await fetch(webhookURL, {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(data)
-		});
-		console.log("Dados enviados ao n8n com sucesso!");
-	} catch (err) {
-		console.error("Erro ao enviar para o webhook:", err);
-	}
-}
-function resetForm(){
-	location.reload();
-}
-</script>
+      const badge = createBadge(v, v);
+      badge.addEventListener('click', () => {
+        state.vidrosEscolhidos.delete(v);
+        badge.remove();
+      }, {passive:true});
+
+      vidrosSelecionados.appendChild(badge);
+      vidrosSelect.value = '';
+    });
+
+    /* =========================
+       Assistência 24h
+       ========================= */
+    function buildAssistencia24h(){
+      const container = document.createElement('div');
+      container.style.marginTop = '6px';
+      container.dataset.cobertura = 'Assistencia 24h';
+      const selectNivel = document.createElement('select');
+      selectNivel.innerHTML = '<option value="" disabled selected>Nível</option><option value="Essencial">Essencial</option><option value="Basico">Básico</option><option value="Intermediario">Intermediário</option><option value="Superior">Superior</option><option value="Exclusivo">Exclusivo</option>';
+      selectNivel.style.display = 'block';
+      selectNivel.style.marginBottom = '8px';
+      const inputDist = document.createElement('input');
+      inputDist.type = 'text';
+      inputDist.placeholder = 'Distância Máxima de Guincho (km)';
+      inputDist.style.display = 'none';
+      selectNivel.addEventListener('change', () => { inputDist.style.display = 'block'; }, {passive:true});
+      container.appendChild(selectNivel);
+      container.appendChild(inputDist);
+      assistencia24hContainer.appendChild(container);
+      container.selectNivel = selectNivel;
+      container.inputDist = inputDist;
+    }
+
+    /* =========================
+       Validação e envio
+       ========================= */
+    function validarObrigatorios(){
+      const obrigatorios = [vendedor,cidade,proposta,segurado,modelo,ano,placa,franquia,formaPagamento,validadeOrcamento];
+      for(const el of obrigatorios){
+        if(!el || !el.value){
+          el.style.border = '2px solid #e11d48';
+          el.style.boxShadow = '0 0 0 3px rgba(225,29,72,0.12)';
+          el.focus();
+          return false;
+        }
+      }
+      if(formaPagamento.value === 'credito'){
+        if(!parcelas || !parcelas.value){
+          parcelas.style.border = '2px solid #e11d48';
+          parcelas.style.boxShadow = '0 0 0 3px rgba(225,29,72,0.12)';
+          parcelas.focus();
+          return false;
+        }
+      }
+      return true;
+    }
+
+    async function enviarFormulario(){
+      if(!validarObrigatorios()) return;
+      const payload = {
+        vendedor: vendedor.value,
+        proposta: proposta.value,
+        segurado: segurado.value,
+        condutor2: condutor2.value || '',
+        modelo: modelo.value,
+        ano: ano.value,
+        placa: placa.value,
+        franquia: franquia.value,
+        formaPagamento: formaPagamento.value,
+        parcelas: parcelas ? parcelas.value : '',
+        validadeOrcamento: validadeOrcamento.value,
+        coberturas: Array.from(state.coberturasEscolhidas),
+        assistencias: Array.from(state.assistenciasEscolhidas),
+        vidros: Array.from(state.vidrosEscolhidos),
+        assistencia24h: (() => {
+          const container = assistencia24hContainer.querySelector('[data-cobertura="Assistencia 24h"]');
+          if(!container) return null;
+          return { nivel: container.selectNivel ? container.selectNivel.value : '', distancia: container.inputDist ? container.inputDist.value : '' };
+        })()
+      };
+      console.log('Payload:', payload);
+      successOverlay.classList.add('show');
+      successOverlay.setAttribute('aria-hidden','false');
+      btnReset.style.display = 'inline-block';
+      setTimeout(() => { successOverlay.classList.remove('show'); successOverlay.setAttribute('aria-hidden','true'); }, 5000);
+     
+      const webhookURL = 'https://projeto1-n8n.khyklu.easypanel.host/webhook-test/db0338f3-a387-4a7a-8981-c17c540ed3ea';
+      try {
+        await fetch(webhookURL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+      } catch(err){ console.error('Erro ao enviar:', err); }
+      
+    }
+
+    btnEnviar.addEventListener('click', enviarFormulario);
+    btnReset.addEventListener('click', () => location.reload());
+    overlayClose.addEventListener('click', () => { successOverlay.classList.remove('show'); successOverlay.setAttribute('aria-hidden','true'); });
+
+    /* =========================
+       Tema persistente
+       ========================= */
+    function toggleTheme(){
+      const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      themeToggle.textContent = next === 'dark' ? '🌙' : '🌞';
+      try { localStorage.setItem('eco_theme', next); } catch(e){ /* ignore */ }
+    }
+
+    /* =========================
+       BLOBS adaptativos
+       - desliga ou reduz em dispositivos touch / telas pequenas
+       - usa passive listeners para performance
+       ========================= */
+    function initBlobs(){
+      if(!bg) return;
+      const isTouch = window.matchMedia('(pointer: coarse)').matches || ('ontouchstart' in window);
+      const smallScreen = window.innerWidth < 720;
+      // se for touch ou tela pequena, reduz ou desliga
+      const COUNT = (isTouch || smallScreen) ? 60 : 800;
+
+      // se preferir desligar completamente em touch, descomente:
+      // if(isTouch) return;
+
+      const blobs = [];
+      for(let i=0;i<COUNT;i++){
+        const blob = document.createElement('div');
+        blob.className = 'blob';
+        const x = Math.random() * window.innerWidth;
+        const y = Math.random() * window.innerHeight;
+        blob.style.left = x + 'px';
+        blob.style.top = y + 'px';
+        blob.dataset.ox = x;
+        blob.dataset.oy = y;
+        bg.appendChild(blob);
+        blobs.push(blob);
+      }
+
+      const onMove = (clientX, clientY) => {
+        const mx = clientX;
+        const my = clientY;
+        const maxDist = 150;
+        blobs.forEach(blob => {
+          const ox = parseFloat(blob.dataset.ox);
+          const oy = parseFloat(blob.dataset.oy);
+          const dx = mx - ox;
+          const dy = my - oy;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          if(dist < maxDist){
+            const force = (maxDist - dist) / maxDist * 30;
+            const angle = Math.atan2(dy, dx);
+            const tx = -Math.cos(angle) * force;
+            const ty = -Math.sin(angle) * force;
+            blob.style.transform = `translate(${tx}px, ${ty}px)`;
+          } else {
+            blob.style.transform = 'translate(0,0)';
+          }
+        });
+      };
+
+      document.addEventListener('mousemove', e => onMove(e.clientX, e.clientY), {passive:true});
+      document.addEventListener('touchmove', e => {
+        if(e.touches && e.touches[0]) onMove(e.touches[0].clientX, e.touches[0].clientY);
+      }, {passive:true});
+
+      window.addEventListener('resize', () => {
+        blobs.forEach(blob => {
+          const x = Math.random() * window.innerWidth;
+          const y = Math.random() * window.innerHeight;
+          blob.style.left = x + 'px';
+          blob.style.top = y + 'px';
+          blob.dataset.ox = x;
+          blob.dataset.oy = y;
+        });
+      }, {passive:true});
+    }
+  </script>
 </body>
 </html>
+
