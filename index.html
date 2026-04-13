@@ -45,6 +45,18 @@
       margin-top:8px;
       font-size:1rem;
     }
+    textarea {
+      width:100%;
+      padding:12px 14px;
+      border-radius:10px;
+      border:1px solid var(--input-border);
+      box-sizing:border-box;
+      margin-top:8px;
+      font-size:1rem;
+      min-height:96px;
+      resize:vertical;
+      font-family:inherit;
+    }
     button { min-height: var(--touch-size); display:inline-flex; align-items:center; justify-content:center; gap:8px; }
 
     .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
@@ -268,6 +280,12 @@
           <div id="assistencia24hContainer"></div>
         </div>
 
+        <!-- NOVO CAMPO: Observações -->
+        <div style="margin-top:12px;">
+          <label for="observacoes">Observações</label>
+          <textarea id="observacoes" name="observacoes" placeholder="Observações (opcional)"></textarea>
+        </div>
+
         <div class="actions">
           <button type="button" class="primary" id="btnEnviar">Enviar</button>
           <button type="button" class="ghost" id="btnReset">Preencher novamente</button>
@@ -312,6 +330,7 @@
     const vidrosSelect = $('#vidrosSelect');
     const vidrosSelecionados = $('#vidrosSelecionados');
     const assistencia24hContainer = $('#assistencia24hContainer');
+    const observacoes = $('#observacoes');
     const btnEnviar = $('#btnEnviar');
     const btnReset = $('#btnReset');
     const successOverlay = $('#successOverlay');
@@ -585,25 +604,65 @@
       vidrosSelect.value = '';
     });
 
-    function buildAssistencia24h(){
-      const container = document.createElement('div');
-      container.style.marginTop = '6px';
-      container.dataset.cobertura = 'Assistencia 24h';
-      const selectNivel = document.createElement('select');
-      selectNivel.innerHTML = '<option value="" disabled selected>Nível</option><option value="Essencial">Essencial</option><option value="Basico">Básico</option><option value="Intermediario">Intermediário</option><option value="Superior">Superior</option><option value="Exclusivo">Exclusivo</option>';
-      selectNivel.style.display = 'block';
-      selectNivel.style.marginBottom = '8px';
-      const inputDist = document.createElement('input');
-      inputDist.type = 'text';
-      inputDist.placeholder = 'Distância Máxima de Guincho (km)';
-      inputDist.style.display = 'none';
-      selectNivel.addEventListener('change', () => { inputDist.style.display = 'block'; }, {passive:true});
-      container.appendChild(selectNivel);
-      container.appendChild(inputDist);
-      assistencia24hContainer.appendChild(container);
-      container.selectNivel = selectNivel;
-      container.inputDist = inputDist;
-    }
+   function buildAssistencia24h(){
+  const container = document.createElement('div');
+  container.style.marginTop = '6px';
+  container.dataset.cobertura = 'Assistencia 24h';
+
+  const wrapper = document.createElement('div');
+  wrapper.style.display = 'flex';
+  wrapper.style.alignItems = 'center';
+  wrapper.style.gap = '8px';
+
+  const selectNivel = document.createElement('select');
+  selectNivel.innerHTML = `
+    <option value="" disabled selected>Nível</option>
+    <option value="Essencial">Essencial</option>
+    <option value="Basico">Básico</option>
+    <option value="Intermediario">Intermediário</option>
+    <option value="Superior">Superior</option>
+    <option value="Exclusivo">Exclusivo</option>
+  `;
+  selectNivel.style.display = 'block';
+  selectNivel.style.marginBottom = '8px';
+
+  const inputDist = document.createElement('input');
+  inputDist.type = 'text';
+  inputDist.placeholder = 'Distância Máxima de Guincho (km)';
+  inputDist.style.display = 'none';
+
+  // Botão de limpar seleção (X vermelho pequeno)
+  const btnClear = document.createElement('span');
+  btnClear.textContent = '✖';
+  btnClear.style.color = '#ef4444';
+  btnClear.style.cursor = 'pointer';
+  btnClear.style.fontWeight = 'bold';
+  btnClear.style.fontSize = '1rem';
+  btnClear.title = 'Limpar seleção da Assistência 24h';
+  btnClear.style.marginLeft = '4px';
+
+  btnClear.addEventListener('click', () => {
+    // Resetar select e input
+    selectNivel.value = "";
+    inputDist.value = "";
+    inputDist.style.display = 'none';
+  });
+
+  selectNivel.addEventListener('change', () => {
+    inputDist.style.display = 'block';
+  }, {passive:true});
+
+  wrapper.appendChild(selectNivel);
+  wrapper.appendChild(inputDist);
+  wrapper.appendChild(btnClear);
+
+  container.appendChild(wrapper);
+  assistencia24hContainer.appendChild(container);
+
+  container.selectNivel = selectNivel;
+  container.inputDist = inputDist;
+}
+
 
     function validarObrigatorios(){
       const obrigatorios = [vendedor,cidade,proposta,segurado,modelo,ano,placa,franquia,formaPagamento,validadeOrcamento];
@@ -720,7 +779,8 @@
         coberturas: buildCoberturasPayload({ numericValues: true }),
         assistencias: buildAssistenciasPayload(),
         vidros: buildVidrosPayload(),
-        assistencia24h: buildAssistencia24hPayload()
+        assistencia24h: buildAssistencia24hPayload(),
+        observacoes: observacoes ? observacoes.value : ''
       };
 
       console.log('Payload:', payload);
