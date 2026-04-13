@@ -104,7 +104,7 @@
     .actions .ghost { flex: 0 0 160px; max-width: 160px; padding: 10px 12px; font-size: 0.95rem; }
 
     .badges{margin-top:8px;}
-    .badge{display:inline-block;background:var(--color-primary);color:#fff;padding:8px 12px;border-radius:999px;margin:6px 6px 6px 0;cursor:pointer;font-size:0.95rem;line-height:1;}
+    .badge{display:inline-block;background:var(--color-primary);color:#fff;padding:10px 16px;border-radius:999px;margin:6px 6px 6px 0;cursor:pointer;font-size:1rem;line-height:1.2;white-space:nowrap;}
     .small{font-size:0.85rem;}
 
     .cobertura-item, .assistencia-item {
@@ -272,6 +272,9 @@
           <label for="franquia">Franquia</label>
           <input id="franquia" name="franquia" type="text" placeholder="R$ 0,00" required />
 
+          <label for="valorTotal">Valor Total</label>
+          <input id="valorTotal" name="valorTotal" type="text" placeholder="R$ 0,00" required />
+
           <label for="formaPagamento">Forma de pagamento</label>
           <select id="formaPagamento" name="formaPagamento" required>
             <option value="" disabled selected>Selecione</option>
@@ -299,12 +302,13 @@
           <label for="coberturaSelect">Coberturas</label>
           <select id="coberturaSelect">
             <option value="" disabled selected>Escolha uma cobertura</option>
-            <option value="Percentual Tabela FIP">FIP</option>
+            <option value="Percentual Tabela FIPE">FIPE</option>
             <option value="Roubo/Furto">Roubo/Furto</option>
             <option value="Perda Total">Perda Total</option>
             <option value="Compreensiva">Compreensiva</option>
             <option value="RCFV">RCFV</option>
             <option value="Danos Morais">Danos Morais</option>
+            <option value="Acidentes pessoais morte/invalidez">Acidentes pessoais morte/invalidez</option>
             <option value="Danos Materiais">Danos Materiais</option>
             <option value="Danos Corporais">Danos Corporais</option>
             <option value="Custo de Defesa">Custo de Defesa</option>
@@ -396,6 +400,7 @@
     const ano = $('#ano');
     const placa = $('#placa');
     const franquia = $('#franquia');
+    const valorTotal = $('#valorTotal');
     const formaPagamento = $('#formaPagamento');
     const parcelas = $('#parcelas');
     const parcelasContainer = $('#parcelasContainer');
@@ -425,7 +430,8 @@
     const originalOptions = {
       cobertura: [],
       assistencia: [],
-      vidros: []
+      vidros: [],
+      servicos24h: []
     };
 
     function createBadge(text, key){
@@ -452,6 +458,14 @@
         originalOptions.vidros = Array.from(vidrosSelect.querySelectorAll('option')).map((o,i)=>({value:o.value, text:o.text, index:i, disabled:o.disabled}));
       }
 
+      originalOptions.servicos24h = [
+        {value:'Guincho', text:'Guincho', index:1},
+        {value:'Troca de Pneus', text:'Troca de Pneus', index:2},
+        {value:'Pane Seca', text:'Pane Seca', index:3},
+        {value:'Chaveiro', text:'Chaveiro', index:4},
+        {value:'Taxi', text:'Taxi', index:5}
+      ];
+
       const savedTheme = localStorage.getItem('eco_theme');
       if(savedTheme === 'dark' || savedTheme === 'light'){
         document.documentElement.setAttribute('data-theme', savedTheme);
@@ -476,6 +490,11 @@
         e.target.value = v ? formatBRLFromDigits(v) : '';
       }, {passive:false});
 
+      valorTotal.addEventListener('input', e => {
+        let v = e.target.value.replace(/\D/g,'');
+        e.target.value = v ? formatBRLFromDigits(v) : '';
+      }, {passive:false});
+
       formaPagamento.addEventListener('change', () => {
         if(formaPagamento.value === 'credito') {
           parcelasContainer.style.display = 'block';
@@ -492,7 +511,7 @@
         buildParcelasInputs();
       }, {passive:true});
 
-      ['vendedor','cidade','proposta','segurado','modelo','ano','placa','franquia','formaPagamento','validadeOrcamento'].forEach(id => {
+      ['vendedor','cidade','proposta','segurado','modelo','ano','placa','franquia','valorTotal','formaPagamento','validadeOrcamento'].forEach(id => {
         const el = document.getElementById(id);
         if(!el) return;
         el.addEventListener('input', () => { el.style.border=''; el.style.boxShadow=''; }, {passive:true});
@@ -542,24 +561,25 @@
       }
     }
 
-   function buildParcelasValoresPayload(){
-  const valorUnico = document.getElementById('parcelaValorUnico');
-  if(!valorUnico || !valorUnico.value) return [];
-  
-  const valor = brlToNumber(valorUnico.value);
-  const numParcelas = parseInt(parcelas.value) || 0;
-  
-  return {
-    quantidade: numParcelas,
-    valor: valor
-  };
-}
+    function buildParcelasValoresPayload(){
+      const valorUnico = document.getElementById('parcelaValorUnico');
+      if(!valorUnico || !valorUnico.value) return null;
+      
+      const valor = brlToNumber(valorUnico.value);
+      const numParcelas = parseInt(parcelas.value) || 0;
+      
+      return {
+        quantidade: numParcelas,
+        valorParcela: valor
+      };
+    }
 
     function removeOptionFromSelect(selectEl, value){
       if(!selectEl || !value) return;
       const opt = Array.from(selectEl.options).find(o => o.value === value);
       if(opt) opt.remove();
     }
+    
     function addOptionToSelect(selectEl, value, originalList){
       if(!selectEl || !value || !originalList) return;
       if(Array.from(selectEl.options).some(o => o.value === value)) return;
@@ -576,7 +596,7 @@
 
     const COBERTURAS = {
       simples: ['Roubo/Furto','Perda Total','Compreensiva'],
-      complexas: ['Danos Morais','Danos Materiais','RCFV','Percentual Tabela FIP','Danos Corporais','Custo de Defesa','Despesa Extraordinária'],
+      complexas: ['Danos Morais','Danos Materiais','RCFV','Percentual Tabela FIPE','Acidentes pessoais morte/invalidez','Danos Corporais','Custo de Defesa','Despesa Extraordinária'],
       carroReserva: 'Carro Reserva',
       pares: [['Danos Materiais','Danos Corporais']]
     };
@@ -585,19 +605,9 @@
       const v = coberturaSelect.value;
       if(!v) return;
       if(state.coberturasEscolhidas.has(v)) { coberturaSelect.value = ''; return; }
-      const par = findParQueContem(v);
-      if(par){
-        par.forEach(item => { if(!state.coberturasEscolhidas.has(item)) addCobertura(item); });
-      } else {
-        addCobertura(v);
-      }
+      addCobertura(v);
       coberturaSelect.value = '';
     });
-
-    function findParQueContem(valor){
-      for(const p of COBERTURAS.pares) if(p.includes(valor)) return p;
-      return null;
-    }
 
     function addCobertura(v){
       if(state.coberturasEscolhidas.has(v)) return;
@@ -622,15 +632,15 @@
           inputExtra.className = 'small';
           inputExtra.style.minWidth = '40px';
 
-          if(v === 'Percentual Tabela FIP'){
+          if(v === 'Percentual Tabela FIPE'){
             inputExtra.type = 'number';
             inputExtra.placeholder = 'Percentual Requerido(%)';
             inputExtra.min = '0';
-            inputExtra.max = '100';
+            inputExtra.max = '110';
 
             inputExtra.addEventListener('input', e => {
               let value = e.target.value.replace(/[^0-9]/g,'');
-              if(value > 100) value = 100;
+              if(value > 110) value = 110;
               e.target.value = value;
             }, {passive:false});
 
@@ -663,9 +673,7 @@
         complexasContainer.appendChild(wrapper);
       }
       badge.addEventListener('click', () => {
-        const par = findParQueContem(v);
-        if(par) par.forEach(item => removeCobertura(item));
-        else removeCobertura(v);
+        removeCobertura(v);
       });
     }
 
@@ -677,9 +685,6 @@
       const extras = document.querySelectorAll(`[data-cobertura="${v}"]`);
       extras.forEach(el => el.remove());
       addOptionToSelect(coberturaSelect, v, originalOptions.cobertura);
-
-      const par = findParQueContem(v);
-      if(par) par.forEach(item => { if(state.coberturasEscolhidas.has(item)) removeCobertura(item); });
     }
 
     const ASSISTENCIAS = { simples: ['Martelinho de ouro','Pequenos Reparos','Parachoque/Pintura'], complexas: ['Assistencia de Vidros'] };
@@ -766,60 +771,189 @@
       container.style.marginTop = '6px';
       container.dataset.cobertura = 'Assistencia 24h';
 
-      const wrapper = document.createElement('div');
-      wrapper.style.display = 'flex';
-      wrapper.style.alignItems = 'center';
-      wrapper.style.gap = '8px';
+      const selectServico = document.createElement('select');
+      selectServico.innerHTML = `
+        <option value="" disabled selected>Escolha um serviço</option>
+        <option value="Guincho">Guincho</option>
+        <option value="Troca de Pneus">Troca de Pneus</option>
+        <option value="Pane Seca">Pane Seca</option>
+        <option value="Chaveiro">Chaveiro</option>
+        <option value="Taxi">Taxi</option>
+      `;
+
+      const simplesContainer24h = document.createElement('div');
+      simplesContainer24h.style.display = 'flex';
+      simplesContainer24h.style.flexWrap = 'wrap';
+      simplesContainer24h.style.gap = '8px';
+      simplesContainer24h.style.alignItems = 'center';
+      simplesContainer24h.style.marginTop = '8px';
+      simplesContainer24h.style.marginBottom = '12px';
+
+      const complexasContainer24h = document.createElement('div');
+      complexasContainer24h.style.display = 'flex';
+      complexasContainer24h.style.flexDirection = 'column';
+      complexasContainer24h.style.gap = '8px';
+      complexasContainer24h.style.marginTop = '8px';
+      complexasContainer24h.style.marginBottom = '12px';
+
+      const nivelContainer = document.createElement('div');
+      nivelContainer.style.display = 'none';
+      nivelContainer.style.marginBottom = '12px';
+
+      const labelNivel = document.createElement('label');
+      labelNivel.textContent = 'Nível';
+      labelNivel.style.display = 'block';
+      labelNivel.style.marginTop = '0px';
+      labelNivel.style.marginBottom = '8px';
 
       const selectNivel = document.createElement('select');
       selectNivel.innerHTML = `
-        <option value="" disabled selected>Nível</option>
+        <option value="" disabled selected>Selecione o nível</option>
         <option value="Essencial">Essencial</option>
         <option value="Basico">Básico</option>
         <option value="Intermediario">Intermediário</option>
         <option value="Superior">Superior</option>
         <option value="Exclusivo">Exclusivo</option>
       `;
-      selectNivel.style.display = 'block';
-      selectNivel.style.marginBottom = '8px';
+
+      const distanciaContainer = document.createElement('div');
+      distanciaContainer.style.display = 'none';
+      distanciaContainer.style.marginBottom = '12px';
+
+      const labelDist = document.createElement('label');
+      labelDist.textContent = 'Distância Máxima de Guincho (km)';
+      labelDist.style.display = 'block';
+      labelDist.style.marginTop = '0px';
+      labelDist.style.marginBottom = '8px';
 
       const inputDist = document.createElement('input');
       inputDist.type = 'text';
-      inputDist.placeholder = 'Distância Máxima de Guincho (km)';
-      inputDist.style.display = 'none';
+      inputDist.placeholder = 'Digite a distância';
+      inputDist.style.marginTop = '0px';
 
-      const btnClear = document.createElement('span');
-      btnClear.textContent = '✖';
-      btnClear.style.color = '#ef4444';
-      btnClear.style.cursor = 'pointer';
-      btnClear.style.fontWeight = 'bold';
-      btnClear.style.fontSize = '1rem';
-      btnClear.title = 'Limpar seleção da Assistência 24h';
-      btnClear.style.marginLeft = '4px';
+      const state24h = {
+        servicos: new Map()
+      };
 
-      btnClear.addEventListener('click', () => {
-        selectNivel.value = "";
-        inputDist.value = "";
-        inputDist.style.display = 'none';
+      function temGuincho(){
+        return Array.from(state24h.servicos.keys()).includes('Guincho');
+      }
+
+      function atualizarDistancia(){
+        if(temGuincho()){
+          distanciaContainer.style.display = 'block';
+          nivelContainer.style.display = 'block';
+        } else {
+          distanciaContainer.style.display = 'none';
+          nivelContainer.style.display = 'none';
+          inputDist.value = '';
+          selectNivel.value = '';
+        }
+      }
+
+      selectServico.addEventListener('change', () => {
+        const v = selectServico.value;
+        if(!v) return;
+        if(state24h.servicos.has(v)) { selectServico.value = ''; return; }
+        
+        state24h.servicos.set(v, { nivel: '', distancia: '', tipo: '', dias: '' });
+        
+        const wrapper = document.createElement('div');
+        wrapper.style.display = 'flex';
+        wrapper.style.gap = '8px';
+        wrapper.style.alignItems = 'center';
+        wrapper.style.marginBottom = '6px';
+        wrapper.dataset.servico = v;
+        wrapper.className = 'assistencia24h-item';
+        
+        const badge = createBadge(v, v);
+        wrapper.appendChild(badge);
+
+        let isComplex = false;
+
+      
+
+        badge.addEventListener('click', () => {
+          state24h.servicos.delete(v);
+          wrapper.remove();
+          addOptionToSelect24h(v);
+          
+          if(state24h.servicos.size === 0){
+            nivelContainer.style.display = 'none';
+            distanciaContainer.style.display = 'none';
+            selectNivel.value = '';
+            inputDist.value = '';
+          } else {
+            atualizarDistancia();
+          }
+        });
+
+        if(isComplex){
+          complexasContainer24h.appendChild(wrapper);
+        } else {
+          simplesContainer24h.appendChild(wrapper);
+        }
+
+        removeOptionFromSelect24h(v);
+        
+        atualizarDistancia();
+        selectServico.value = '';
       });
 
+      function removeOptionFromSelect24h(value){
+        const opt = Array.from(selectServico.options).find(o => o.value === value);
+        if(opt) opt.remove();
+      }
+
+      function addOptionToSelect24h(value){
+        if(Array.from(selectServico.options).some(o => o.value === value)) return;
+        const meta = originalOptions.servicos24h.find(o => o.value === value);
+        if(!meta) return;
+        const newOpt = document.createElement('option');
+        newOpt.value = meta.value;
+        newOpt.text = meta.text;
+        const insertIndex = Math.min(meta.index, selectServico.options.length);
+        if(insertIndex >= selectServico.options.length) selectServico.appendChild(newOpt);
+        else selectServico.insertBefore(newOpt, selectServico.options[insertIndex]);
+      }
+
       selectNivel.addEventListener('change', () => {
-        inputDist.style.display = 'block';
-      }, {passive:true});
+        state24h.servicos.forEach((val) => {
+          val.nivel = selectNivel.value;
+        });
+      });
 
-      wrapper.appendChild(selectNivel);
-      wrapper.appendChild(inputDist);
-      wrapper.appendChild(btnClear);
+      inputDist.addEventListener('input', () => {
+        state24h.servicos.forEach((val) => {
+          val.distancia = inputDist.value;
+        });
+      });
 
-      container.appendChild(wrapper);
+      nivelContainer.appendChild(labelNivel);
+      nivelContainer.appendChild(selectNivel);
+
+      distanciaContainer.appendChild(labelDist);
+      distanciaContainer.appendChild(inputDist);
+
+      container.appendChild(selectServico);
+      container.appendChild(simplesContainer24h);
+      container.appendChild(complexasContainer24h);
+      container.appendChild(nivelContainer);
+      container.appendChild(distanciaContainer);
+
       assistencia24hContainer.appendChild(container);
 
       container.selectNivel = selectNivel;
       container.inputDist = inputDist;
+      container.simplesContainer24h = simplesContainer24h;
+      container.complexasContainer24h = complexasContainer24h;
+      container.state24h = state24h;
+      container.nivelContainer = nivelContainer;
+      container.distanciaContainer = distanciaContainer;
     }
 
     function validarObrigatorios(){
-      const obrigatorios = [vendedor,cidade,proposta,segurado,modelo,ano,placa,franquia,formaPagamento,validadeOrcamento];
+      const obrigatorios = [vendedor,cidade,proposta,segurado,modelo,ano,placa,franquia,valorTotal,formaPagamento,validadeOrcamento];
       for(const el of obrigatorios){
         if(!el || !el.value){
           el.style.border = '2px solid #e11d48';
@@ -861,7 +995,7 @@
         if(selectTipo && selectTipo.value) obj.tipo = selectTipo.value;
         const inputDias = w.querySelector('input[type="number"]');
         if(inputDias && inputDias.value) {
-          if(nome === 'Percentual Tabela FIP') {
+          if(nome === 'Percentual Tabela FIPE') {
             obj.percentual = inputDias.value;
           } else {
             obj.dias = inputDias.value;
@@ -913,35 +1047,47 @@
 
     function buildAssistencia24hPayload(){
       const container = assistencia24hContainer.querySelector('[data-cobertura="Assistencia 24h"]');
-      if(!container) return null;
-      return {
-        nivel: container.selectNivel ? container.selectNivel.value : '',
-        distancia: container.inputDist ? container.inputDist.value : ''
-      };
+      if(!container || container.state24h.servicos.size === 0) return null;
+      
+      const servicos = [];
+      container.state24h.servicos.forEach((dados, nomeServico) => {
+        servicos.push({
+          nome: nomeServico,
+          nivel: dados.nivel,
+          distancia: dados.distancia,
+          tipo: dados.tipo,
+          dias: dados.dias
+        });
+      });
+      
+      return servicos.length > 0 ? { servicos: servicos } : null;
     }
 
     async function enviarFormulario(){
       if(!validarObrigatorios()) return;
 
+      const parcelasPayload = buildParcelasValoresPayload();
+
       const payload = {
-        vendedor: vendedor.value,
-        cidade: cidade.value,
-        proposta: proposta.value,
-        segurado: segurado.value,
-        condutor2: condutor2.value || '',
-        modelo: modelo.value,
-        ano: ano.value,
-        placa: placa.value,
-        franquia: brlToNumber(franquia.value),
-        formaPagamento: formaPagamento.value,
-        parcelas: parcelas ? parcelas.value : '',
-        parcelasValores: buildParcelasValoresPayload(),
-        validadeOrcamento: validadeOrcamento.value,
-        coberturas: buildCoberturasPayload({ numericValues: true }),
-        assistencias: buildAssistenciasPayload(),
-        vidros: buildVidrosPayload(),
-        assistencia24h: buildAssistencia24hPayload(),
-        observacoes: observacoes ? observacoes.value : ''
+        Vendedor: vendedor.value,
+        Cidade: cidade.value,
+        Proposta: proposta.value,
+        Segurado: segurado.value,
+        'Segundo Condutor': condutor2.value || '',
+        Modelo: modelo.value,
+        'Ano do Veiculo': ano.value,
+        'Placa do Carro': placa.value,
+        Franquia: brlToNumber(franquia.value),
+        'Valor Total': brlToNumber(valorTotal.value),
+        'Forma de Pagamento': formaPagamento.value,
+        Parcelas: parcelas ? parcelas.value : '',
+        'Valor Parcela': parcelasPayload ? parcelasPayload.valorParcela : null,
+        'Validade do Orçamento': validadeOrcamento.value,
+        Coberturas: buildCoberturasPayload({ numericValues: true }),
+        Assistencias: buildAssistenciasPayload(),
+        'Assistencias Vidros': buildVidrosPayload(),
+        'Assistencia 24h': buildAssistencia24hPayload(),
+        Observacoes: observacoes ? observacoes.value : ''
       };
 
       console.log('Payload:', payload);
@@ -984,7 +1130,6 @@
 
         successOverlay.classList.add('show');
         successOverlay.setAttribute('aria-hidden','false');
-        btnReset.style.display = 'inline-block';
 
         setTimeout(() => {
           successOverlay.classList.remove('show');
