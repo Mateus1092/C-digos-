@@ -504,8 +504,6 @@
       themeToggle.addEventListener('click', toggleTheme);
     })();
 
-   
-
     function buildParcelasInputs(){
       const numParcelas = parseInt(parcelas.value) || 0;
       let container = document.getElementById('parcelasValoresContainer');
@@ -544,25 +542,18 @@
       }
     }
 
-    function buildParcelasValoresPayload(){
-      const valorUnico = document.getElementById('parcelaValorUnico');
-      if(!valorUnico || !valorUnico.value) return [];
-      
-      const valor = brlToNumber(valorUnico.value);
-      const numParcelas = parseInt(parcelas.value) || 0;
-      const arr = [];
-      
-      for(let i = 1; i <= numParcelas; i++){
-        arr.push({
-          parcela: i,
-          valor: valor
-        });
-      }
-      
-      return arr;
-    }
-
-
+   function buildParcelasValoresPayload(){
+  const valorUnico = document.getElementById('parcelaValorUnico');
+  if(!valorUnico || !valorUnico.value) return [];
+  
+  const valor = brlToNumber(valorUnico.value);
+  const numParcelas = parseInt(parcelas.value) || 0;
+  
+  return {
+    quantidade: numParcelas,
+    valor: valor
+  };
+}
 
     function removeOptionFromSelect(selectEl, value){
       if(!selectEl || !value) return;
@@ -869,7 +860,13 @@
         const selectTipo = w.querySelector('select');
         if(selectTipo && selectTipo.value) obj.tipo = selectTipo.value;
         const inputDias = w.querySelector('input[type="number"]');
-        if(inputDias && inputDias.value) obj.dias = inputDias.value;
+        if(inputDias && inputDias.value) {
+          if(nome === 'Percentual Tabela FIP') {
+            obj.percentual = inputDias.value;
+          } else {
+            obj.dias = inputDias.value;
+          }
+        }
         const extras = w.querySelectorAll('[data-extra-key]');
         extras.forEach(el => {
           const key = el.dataset.extraKey;
@@ -923,19 +920,6 @@
       };
     }
 
-    function buildParcelasValoresPayload(){
-      const arr = [];
-      document.querySelectorAll('.parcela-valor').forEach(input => {
-        if(input.value){
-          arr.push({
-            parcela: input.dataset.parcela,
-            valor: brlToNumber(input.value)
-          });
-        }
-      });
-      return arr;
-    }
-
     async function enviarFormulario(){
       if(!validarObrigatorios()) return;
 
@@ -948,7 +932,7 @@
         modelo: modelo.value,
         ano: ano.value,
         placa: placa.value,
-        franquia: franquia.value,
+        franquia: brlToNumber(franquia.value),
         formaPagamento: formaPagamento.value,
         parcelas: parcelas ? parcelas.value : '',
         parcelasValores: buildParcelasValoresPayload(),
