@@ -6,9 +6,6 @@
   <title>Formulário ECO</title>
 
   <style>
-    /* =========================
-       Variáveis e temas
-       ========================= */
     :root{
       --color-primary:#1f7a3a;
       --bg:#f6f8f7;
@@ -16,7 +13,7 @@
       --card-border:#e5e7eb;
       --text:#1f2937;
       --input-border:#d1d5db;
-      --ghost-color:#ef4444; /* vermelho padrão para o botão ghost */
+      --ghost-color:#ef4444;
       --ghost-text:#ffffff;
       --radius:14px;
       --shadow:0 15px 35px rgba(0,0,0,0.08);
@@ -28,21 +25,14 @@
       --card-border:#1f2a24;
       --text:#ecfdf5;
       --input-border:#2d3a34;
-      /* manter o botão ghost vermelho e texto branco também no dark */
       --ghost-color:#ef4444;
       --ghost-text:#ffffff;
     }
 
-    /* =========================
-       Layout geral
-       ========================= */
     html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:var(--text);background:var(--bg);}
     .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 12px;box-sizing:border-box;}
     .card{width:100%;max-width:920px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);position:relative;box-sizing:border-box;z-index:2;}
 
-    /* =========================
-       Form elements (touch friendly)
-       ========================= */
     .logo{display:block;margin:0 auto 12px;max-width:160px;}
     h1{font-size:1.1rem;margin:0 0 12px;text-align:center;}
     label{display:block;margin-top:12px;font-weight:600;font-size:0.95rem;}
@@ -61,7 +51,6 @@
     .grid-3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;}
     .actions{margin-top:18px;display:flex;flex-direction:row;gap:12px;align-items:center;}
     button.primary{flex:1;background:var(--color-primary);color:#fff;border:none;padding:12px;border-radius:10px;font-weight:700;cursor:pointer;}
-    /* botão "Preencher novamente" com cor sólida vermelha e texto branco */
     button.ghost{
       background: var(--ghost-color);
       border: 1px solid var(--ghost-color);
@@ -72,18 +61,13 @@
     button.ghost:active{ transform: translateY(1px); }
     button.ghost:focus{ outline: 3px solid rgba(239,68,68,0.18); outline-offset:2px; }
 
-    /* Make reset button smaller than submit */
     .actions .primary { flex: 1 1 auto; min-width: 0; }
     .actions .ghost { flex: 0 0 160px; max-width: 160px; padding: 10px 12px; font-size: 0.95rem; }
 
-    /* =========================
-       Badges e containers dinâmicos
-       ========================= */
     .badges{margin-top:8px;}
     .badge{display:inline-block;background:var(--color-primary);color:#fff;padding:8px 12px;border-radius:999px;margin:6px 6px 6px 0;cursor:pointer;font-size:0.95rem;line-height:1;}
     .small{font-size:0.85rem;}
 
-    /* wrapper para manter badge + campo juntos */
     .cobertura-item, .assistencia-item {
       display:flex;
       gap:8px;
@@ -94,7 +78,6 @@
     .cobertura-item .badge, .assistencia-item .badge { margin:0; }
     .cobertura-item input, .assistencia-item input, .cobertura-item select { margin:0; }
 
-    /* Containers: simples inline; complexas em coluna (cada item em sua linha) */
     #simplesContainer, #simplesAssistenciasContainer {
       display:flex;
       flex-wrap:wrap;
@@ -107,7 +90,6 @@
       gap:8px;
     }
 
-    /* Vidros: badges inline */
     #vidrosSelecionados {
       display:flex;
       flex-wrap:wrap;
@@ -117,23 +99,13 @@
     }
     #vidrosSelecionados .badge { margin:0; }
 
-    /* overlay de sucesso */
     .overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.35);z-index:9999;visibility:hidden;opacity:0;transition:opacity .25s,visibility .25s;}
     .overlay.show{visibility:visible;opacity:1;}
     .overlay .card{max-width:420px;text-align:center;z-index:10000;}
 
-    /* =========================
-       BACKGROUND BLOBS (mobile-aware)
-       - z-index baixo para ficar atrás do card
-       - pointer-events none para não atrapalhar toques
-       - mix-blend-mode para melhor contraste
-       ========================= */
     .background { position: fixed; inset: 0; background: transparent; z-index: 0; overflow: hidden; pointer-events: none; }
     .blob { position: absolute; width: 30px; height: 30px; background: rgba(31,122,58,0.9); border-radius: 50%; filter: blur(2px); pointer-events: none; transition: transform 0.12s linear; will-change: transform; z-index: 0; mix-blend-mode: screen; opacity:0.95; }
 
-    /* =========================
-       Ajustes mobile (melhor leitura e toques)
-       ========================= */
     @media (max-width: 720px) {
       .card{padding:18px;border-radius:12px;}
       .grid-2{grid-template-columns:1fr;gap:10px;}
@@ -147,7 +119,6 @@
       h1{font-size:1rem;}
     }
 
-    /* se o dispositivo tem ponteiro grosso (touch), reduz efeitos e blobs */
     @media (pointer: coarse) {
       .blob { filter: blur(1.5px); opacity:0.9; }
     }
@@ -155,7 +126,6 @@
 </head>
 <body>
 
-  <!-- BACKGROUND BLOBS -->
   <div class="background" id="bg"></div>
 
   <div class="wrap">
@@ -242,7 +212,6 @@
           <input id="validadeOrcamento" name="validadeOrcamento" type="date" required />
         </div>
 
-        <!-- Coberturas -->
         <div style="margin-top:12px;">
           <label for="coberturaSelect">Coberturas</label>
           <select id="coberturaSelect">
@@ -265,7 +234,6 @@
           </div>
         </div>
 
-        <!-- Assistências -->
         <div style="margin-top:12px;">
           <label for="assistenciaSelect">Assistências</label>
           <select id="assistenciaSelect">
@@ -281,7 +249,6 @@
           </div>
         </div>
 
-        <!-- Assistência de Vidros (separada) -->
         <div style="margin-top:12px;">
           <label for="vidrosSelect">Assistência de Vidros</label>
           <select id="vidrosSelect">
@@ -296,13 +263,11 @@
           <div id="vidrosSelecionados"></div>
         </div>
 
-        <!-- Assistência 24h -->
         <div style="margin-top:12px;">
           <label>Assistência 24h</label>
           <div id="assistencia24hContainer"></div>
         </div>
 
-        <!-- Ações -->
         <div class="actions">
           <button type="button" class="primary" id="btnEnviar">Enviar</button>
           <button type="button" class="ghost" id="btnReset">Preencher novamente</button>
@@ -311,7 +276,6 @@
     </div>
   </div>
 
-  <!-- Success overlay -->
   <div class="overlay" id="successOverlay" aria-hidden="true">
     <div class="card">
       <h2>Enviado com sucesso ✅</h2>
@@ -323,9 +287,6 @@
   </div>
 
   <script>
-    /* =========================
-       Seletores e elementos
-       ========================= */
     const $ = s => document.querySelector(s);
     const bg = $('#bg');
     const themeToggle = $('#themeToggle');
@@ -356,18 +317,19 @@
     const successOverlay = $('#successOverlay');
     const overlayClose = $('#overlayClose');
 
-    /* =========================
-       Estado
-       ========================= */
     const state = {
       coberturasEscolhidas: new Set(),
       assistenciasEscolhidas: new Set(),
       vidrosEscolhidos: new Set()
     };
 
-    /* =========================
-       Utilitários
-       ========================= */
+    // Guardar opções originais para restaurar na mesma ordem
+    const originalOptions = {
+      cobertura: [],
+      assistencia: [],
+      vidros: []
+    };
+
     function createBadge(text, key){
       const span = document.createElement('span');
       span.className = 'badge';
@@ -381,14 +343,18 @@
       return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
 
-    /* =========================
-       Inicialização
-       - aplica tema salvo
-       - máscaras
-       - blobs adaptativos
-       ========================= */
     (function init(){
-      // aplicar tema salvo
+      // salvar opções originais (value/text/index)
+      if(coberturaSelect){
+        originalOptions.cobertura = Array.from(coberturaSelect.querySelectorAll('option')).map((o,i)=>({value:o.value, text:o.text, index:i, disabled:o.disabled}));
+      }
+      if(assistenciaSelect){
+        originalOptions.assistencia = Array.from(assistenciaSelect.querySelectorAll('option')).map((o,i)=>({value:o.value, text:o.text, index:i, disabled:o.disabled}));
+      }
+      if(vidrosSelect){
+        originalOptions.vidros = Array.from(vidrosSelect.querySelectorAll('option')).map((o,i)=>({value:o.value, text:o.text, index:i, disabled:o.disabled}));
+      }
+
       const savedTheme = localStorage.getItem('eco_theme');
       if(savedTheme === 'dark' || savedTheme === 'light'){
         document.documentElement.setAttribute('data-theme', savedTheme);
@@ -397,11 +363,9 @@
       }
       themeToggle.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '🌙' : '🌞';
 
-      // data mínima
       const hoje = new Date().toISOString().split('T')[0];
       validadeOrcamento.setAttribute('min', hoje);
 
-      // máscaras
       placa.addEventListener('input', e => e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,7), {passive:true});
       ano.addEventListener('input', e => e.target.value = e.target.value.replace(/[^0-9]/g,'').slice(0,4), {passive:true});
       franquia.addEventListener('input', e => {
@@ -414,7 +378,6 @@
         else { parcelasContainer.style.display = 'none'; if(parcelas) parcelas.value = ''; }
       }, {passive:true});
 
-      // limpar estilos de erro
       ['vendedor','cidade','proposta','segurado','modelo','ano','placa','franquia','formaPagamento','validadeOrcamento'].forEach(id => {
         const el = document.getElementById(id);
         if(!el) return;
@@ -422,21 +385,34 @@
       });
       if(parcelas) parcelas.addEventListener('change', () => { parcelas.style.border=''; parcelas.style.boxShadow=''; }, {passive:true});
 
-      // criar assistencia 24h
       buildAssistencia24h();
-
-      // inicializar blobs com sensibilidade a mobile
       initBlobs();
-
-      // handlers
       themeToggle.addEventListener('click', toggleTheme);
     })();
 
-    /* =========================
-       Coberturas
-       - pares: Danos Materiais <-> Danos Corporais
-       - simples inline; complexas em linha própria
-       ========================= */
+    // Helpers para remover/adicionar opções mantendo ordem original
+    function removeOptionFromSelect(selectEl, value){
+      if(!selectEl || !value) return;
+      const opt = Array.from(selectEl.options).find(o => o.value === value);
+      if(opt) opt.remove();
+    }
+    function addOptionToSelect(selectEl, value, originalList){
+      if(!selectEl || !value || !originalList) return;
+      // já existe?
+      if(Array.from(selectEl.options).some(o => o.value === value)) return;
+      // encontrar meta original
+      const meta = originalList.find(o => o.value === value);
+      if(!meta) return;
+      const newOpt = document.createElement('option');
+      newOpt.value = meta.value;
+      newOpt.text = meta.text;
+      if(meta.disabled) newOpt.disabled = true;
+      // inserir na posição original se possível
+      const insertIndex = Math.min(meta.index, selectEl.options.length);
+      if(insertIndex >= selectEl.options.length) selectEl.appendChild(newOpt);
+      else selectEl.insertBefore(newOpt, selectEl.options[insertIndex]);
+    }
+
     const COBERTURAS = {
       simples: ['Roubo/Furto','Perda Total','Compreensiva'],
       complexas: ['Danos Morais','Danos Materiais','RCFV','Danos Corporais','Custo de Defesa','Despesa Extraordinária'],
@@ -465,6 +441,9 @@
     function addCobertura(v){
       if(state.coberturasEscolhidas.has(v)) return;
       state.coberturasEscolhidas.add(v);
+
+      // remover opção do select para não aparecer novamente
+      removeOptionFromSelect(coberturaSelect, v);
 
       const wrapper = document.createElement('div');
       wrapper.className = 'cobertura-item';
@@ -516,13 +495,13 @@
       if(wrapper) wrapper.remove();
       const extras = document.querySelectorAll(`[data-cobertura="${v}"]`);
       extras.forEach(el => el.remove());
+      // restaurar opção no select na posição original
+      addOptionToSelect(coberturaSelect, v, originalOptions.cobertura);
+
       const par = findParQueContem(v);
       if(par) par.forEach(item => { if(state.coberturasEscolhidas.has(item)) removeCobertura(item); });
     }
 
-    /* =========================
-       Assistências e Vidros
-       ========================= */
     const ASSISTENCIAS = { simples: ['Martelinho de ouro','Pequenos Reparos','Parachoque/Pintura'], complexas: ['Assistencia de Vidros'] };
 
     assistenciaSelect.addEventListener('change', () => {
@@ -536,6 +515,10 @@
     function addAssistencia(v){
       if(state.assistenciasEscolhidas.has(v)) return;
       state.assistenciasEscolhidas.add(v);
+
+      // remover opção do select
+      removeOptionFromSelect(assistenciaSelect, v);
+
       const wrapper = document.createElement('div');
       wrapper.className = 'assistencia-item';
       wrapper.dataset.valor = v;
@@ -577,28 +560,31 @@
       if(wrapper) wrapper.remove();
       const extras = document.querySelectorAll(`[data-cobertura="${v}"]`);
       extras.forEach(el => el.remove());
+      // restaurar opção no select
+      addOptionToSelect(assistenciaSelect, v, originalOptions.assistencia);
     }
 
-    // VIDROS: badges inline no container #vidrosSelecionados
     vidrosSelect.addEventListener('change', () => {
       const v = vidrosSelect.value;
       if(!v) return;
       if(state.vidrosEscolhidos.has(v)) { vidrosSelect.value = ''; return; }
       state.vidrosEscolhidos.add(v);
 
+      // remover opção do select
+      removeOptionFromSelect(vidrosSelect, v);
+
       const badge = createBadge(v, v);
       badge.addEventListener('click', () => {
         state.vidrosEscolhidos.delete(v);
         badge.remove();
+        // restaurar opção no select
+        addOptionToSelect(vidrosSelect, v, originalOptions.vidros);
       }, {passive:true});
 
       vidrosSelecionados.appendChild(badge);
       vidrosSelect.value = '';
     });
 
-    /* =========================
-       Assistência 24h
-       ========================= */
     function buildAssistencia24h(){
       const container = document.createElement('div');
       container.style.marginTop = '6px';
@@ -619,9 +605,6 @@
       container.inputDist = inputDist;
     }
 
-    /* =========================
-       Validação e envio
-       ========================= */
     function validarObrigatorios(){
       const obrigatorios = [vendedor,cidade,proposta,segurado,modelo,ano,placa,franquia,formaPagamento,validadeOrcamento];
       for(const el of obrigatorios){
@@ -643,11 +626,87 @@
       return true;
     }
 
+    function brlToNumber(brlString){
+      if(!brlString) return null;
+      const cleaned = String(brlString).replace(/\s/g,'').replace('R$','').replace(/\./g,'').replace(',','.');
+      const n = Number(cleaned);
+      return isNaN(n) ? null : n;
+    }
+
+    function buildCoberturasPayload({ numericValues = true } = {}){ 
+      const items = [];
+      const wrappers = document.querySelectorAll('.cobertura-item');
+      wrappers.forEach(w => {
+        const nome = w.dataset.valor;
+        if(!nome) return;
+        const obj = { nome };
+        const inputValor = w.querySelector(`input[data-cobertura="${nome}"]`);
+        if(inputValor && inputValor.value){
+          obj.valor = numericValues ? brlToNumber(inputValor.value) : inputValor.value;
+        }
+        const selectTipo = w.querySelector('select');
+        if(selectTipo && selectTipo.value) obj.tipo = selectTipo.value;
+        const inputDias = w.querySelector('input[type="number"]');
+        if(inputDias && inputDias.value) obj.dias = inputDias.value;
+        const extras = w.querySelectorAll('[data-extra-key]');
+        extras.forEach(el => {
+          const key = el.dataset.extraKey;
+          if(!key) return;
+          obj[key] = el.value;
+        });
+        items.push(obj);
+      });
+      return items;
+    }
+
+    function buildAssistenciasPayload(){
+      const items = [];
+      const wrappers = document.querySelectorAll('.assistencia-item');
+      wrappers.forEach(w => {
+        const nome = w.dataset.valor;
+        if(!nome) return;
+        const obj = { nome };
+        const checkboxes = w.querySelectorAll('input[type="checkbox"]');
+        if(checkboxes && checkboxes.length){
+          obj.itens = [];
+          checkboxes.forEach(cb => {
+            if(cb.checked) obj.itens.push(cb.value);
+          });
+        }
+        const selects = w.querySelectorAll('select');
+        selects.forEach((s, i) => { if(s.value) obj[`select_${i}`] = s.value; });
+        const inputs = w.querySelectorAll('input[type="text"], input[type="number"]');
+        inputs.forEach((inp, i) => { if(inp.value) obj[`input_${i}`] = inp.value; });
+        items.push(obj);
+      });
+      return items;
+    }
+
+    function buildVidrosPayload(){
+      const arr = [];
+      const badges = document.querySelectorAll('#vidrosSelecionados .badge');
+      badges.forEach(b => {
+        const nome = b.dataset.valor || b.textContent.replace(' ✖','').trim();
+        arr.push(nome);
+      });
+      return arr;
+    }
+
+    function buildAssistencia24hPayload(){
+      const container = assistencia24hContainer.querySelector('[data-cobertura="Assistencia 24h"]');
+      if(!container) return null;
+      return {
+        nivel: container.selectNivel ? container.selectNivel.value : '',
+        distancia: container.inputDist ? container.inputDist.value : ''
+      };
+    }
+
     async function enviarFormulario(){
       if(!validarObrigatorios()) return;
+
       const payload = {
         vendedor: vendedor.value,
-        cidade:cidade.value,
+        cidade: cidade.value,
         proposta: proposta.value,
         segurado: segurado.value,
         condutor2: condutor2.value || '',
@@ -658,35 +717,28 @@
         formaPagamento: formaPagamento.value,
         parcelas: parcelas ? parcelas.value : '',
         validadeOrcamento: validadeOrcamento.value,
-        coberturas: Array.from(state.coberturasEscolhidas),
-        assistencias: Array.from(state.assistenciasEscolhidas),
-        vidros: Array.from(state.vidrosEscolhidos),
-        assistencia24h: (() => {
-          const container = assistencia24hContainer.querySelector('[data-cobertura="Assistencia 24h"]');
-          if(!container) return null;
-          return { nivel: container.selectNivel ? container.selectNivel.value : '', distancia: container.inputDist ? container.inputDist.value : '' };
-        })()
+        coberturas: buildCoberturasPayload({ numericValues: true }),
+        assistencias: buildAssistenciasPayload(),
+        vidros: buildVidrosPayload(),
+        assistencia24h: buildAssistencia24hPayload()
       };
+
       console.log('Payload:', payload);
       successOverlay.classList.add('show');
       successOverlay.setAttribute('aria-hidden','false');
       btnReset.style.display = 'inline-block';
       setTimeout(() => { successOverlay.classList.remove('show'); successOverlay.setAttribute('aria-hidden','true'); }, 5000);
-     
+
       const webhookURL = 'https://projeto1-n8n.khyklu.easypanel.host/webhook-test/db0338f3-a387-4a7a-8981-c17c540ed3ea';
       try {
         await fetch(webhookURL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
       } catch(err){ console.error('Erro ao enviar:', err); }
-      
     }
 
     btnEnviar.addEventListener('click', enviarFormulario);
     btnReset.addEventListener('click', () => location.reload());
     overlayClose.addEventListener('click', () => { successOverlay.classList.remove('show'); successOverlay.setAttribute('aria-hidden','true'); });
 
-    /* =========================
-       Tema persistente
-       ========================= */
     function toggleTheme(){
       const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
       const next = current === 'dark' ? 'light' : 'dark';
@@ -695,72 +747,204 @@
       try { localStorage.setItem('eco_theme', next); } catch(e){ /* ignore */ }
     }
 
-    /* =========================
-       BLOBS adaptativos
-       - desliga ou reduz em dispositivos touch / telas pequenas
-       - usa passive listeners para performance
-       ========================= */
+    // --- Blobs: movimento lento + repulsão ao aproximar o mouse + retorno suave ---
     function initBlobs(){
       if(!bg) return;
       const isTouch = window.matchMedia('(pointer: coarse)').matches || ('ontouchstart' in window);
       const smallScreen = window.innerWidth < 720;
-      // se for touch ou tela pequena, reduz ou desliga
-      const COUNT = (isTouch || smallScreen) ? 60 : 800;
+      if(isTouch || smallScreen) return;
 
-      // se preferir desligar completamente em touch, descomente:
-      // if(isTouch) return;
+      // parâmetros ajustáveis
+      const COUNT = 45;
+      const MIN_SIZE = 80;
+      const MAX_SIZE = 200;
+      const BASE_ALPHA = 0.08;
+      const REPULSE_RADIUS = 460;
+      const REPULSE_FORCE = 1.9;
+      const RETURN_SPRING = 0.06;
+      const FRICTION = 0.88;
+      const WANDER = 0.25;
 
       const blobs = [];
+
+      // cria blobs e armazena estado (agora com porcentagens relativas ao contêiner)
+      const rectInit = bg.getBoundingClientRect();
       for(let i=0;i<COUNT;i++){
-        const blob = document.createElement('div');
-        blob.className = 'blob';
-        const x = Math.random() * window.innerWidth;
-        const y = Math.random() * window.innerHeight;
-        blob.style.left = x + 'px';
-        blob.style.top = y + 'px';
-        blob.dataset.ox = x;
-        blob.dataset.oy = y;
-        bg.appendChild(blob);
-        blobs.push(blob);
+        const el = document.createElement('div');
+        el.className = 'blob';
+        const size = Math.round(MIN_SIZE + Math.random()*(MAX_SIZE - MIN_SIZE));
+        el.style.width = size + 'px';
+        el.style.height = size + 'px';
+
+        // posição inicial em porcentagem para responsividade
+        const leftPct = Math.random();
+        const topPct = Math.random();
+        el.style.left = '0px';
+        el.style.top = '0px';
+        const alpha = BASE_ALPHA + Math.random()*0.6;
+        el.style.background = `rgba(31,122,58,${alpha})`;
+        el.style.filter = `blur(${2 + Math.random()*10}px)`;
+        bg.appendChild(el);
+
+        // calcular posição absoluta inicial (px) com base no rect atual
+        const x = rectInit.left + leftPct * rectInit.width;
+        const y = rectInit.top + topPct * rectInit.height;
+
+        blobs.push({
+          el,
+          size,
+          x,
+          y,
+          ox: x,
+          oy: y,
+          oxPct: leftPct,
+          oyPct: topPct,
+          vx: (Math.random()-0.5) * 0.2,
+          vy: (Math.random()-0.5) * 0.2,
+          phase: Math.random() * Math.PI * 2
+        });
       }
 
-      const onMove = (clientX, clientY) => {
-        const mx = clientX;
-        const my = clientY;
-        const maxDist = 150;
-        blobs.forEach(blob => {
-          const ox = parseFloat(blob.dataset.ox);
-          const oy = parseFloat(blob.dataset.oy);
-          const dx = mx - ox;
-          const dy = my - oy;
-          const dist = Math.sqrt(dx*dx + dy*dy);
-          if(dist < maxDist){
-            const force = (maxDist - dist) / maxDist * 30;
-            const angle = Math.atan2(dy, dx);
-            const tx = -Math.cos(angle) * force;
-            const ty = -Math.sin(angle) * force;
-            blob.style.transform = `translate(${tx}px, ${ty}px)`;
-          } else {
-            blob.style.transform = 'translate(0,0)';
+      // acompanhar mouse
+      const mouse = { x: null, y: null, inside: false };
+
+      function onMouseMove(e){
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+      }
+      function onMouseEnter(e){
+        mouse.inside = true;
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+      }
+      function onMouseLeave(){
+        mouse.inside = false;
+        mouse.x = null;
+        mouse.y = null;
+      }
+
+      document.addEventListener('mousemove', onMouseMove, {passive:true});
+      document.addEventListener('mouseenter', onMouseEnter, {passive:true});
+      document.addEventListener('mouseleave', onMouseLeave, {passive:true});
+
+      // animação via requestAnimationFrame
+      let lastTime = performance.now();
+      function animate(now){
+        const dt = Math.min(40, now - lastTime) / 16.666;
+        lastTime = now;
+
+        const rect = bg.getBoundingClientRect();
+
+        for(let i=0;i<blobs.length;i++){
+          const b = blobs[i];
+
+          b.phase += 0.002 * dt * (0.5 + Math.random()*1.5);
+          const wanderX = Math.cos(b.phase) * WANDER * (i%3 + 1);
+          const wanderY = Math.sin(b.phase) * WANDER * (i%2 + 1);
+
+          const dxToOrigin = b.ox - b.x;
+          const dyToOrigin = b.oy - b.y;
+          b.vx += dxToOrigin * RETURN_SPRING * 0.5 * dt;
+          b.vy += dyToOrigin * RETURN_SPRING * 0.5 * dt;
+
+          b.vx += wanderX * 0.2 * dt;
+          b.vy += wanderY * 0.2 * dt;
+
+          if(mouse.inside && mouse.x !== null && mouse.y !== null){
+            const dx = b.x - mouse.x;
+            const dy = b.y - mouse.y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            if(dist < REPULSE_RADIUS){
+              const force = (1 - (dist / REPULSE_RADIUS)) * REPULSE_FORCE;
+              const nx = dx / (dist || 1);
+              const ny = dy / (dist || 1);
+              b.vx += nx * force * (1 + Math.random()*0.4) * dt;
+              b.vy += ny * force * (1 + Math.random()*0.4) * dt;
+            }
           }
+
+          b.vx *= FRICTION;
+          b.vy *= FRICTION;
+
+          b.x += b.vx * dt;
+          b.y += b.vy * dt;
+
+          const margin = 60;
+          b.x = Math.max(rect.left - margin, Math.min(rect.right + margin, b.x));
+          b.y = Math.max(rect.top - margin, Math.min(rect.bottom + margin, b.y));
+
+          b.el.style.transform = `translate3d(${b.x - b.size/2}px, ${b.y - b.size/2}px, 0)`;
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      // inicial posicionamento absoluto (ajusta para o centro do blob)
+      function placeInitial(){
+        const rect = bg.getBoundingClientRect();
+        blobs.forEach(b => {
+          // recalcula ox/oy a partir das porcentagens guardadas
+          b.ox = rect.left + b.oxPct * rect.width;
+          b.oy = rect.top + b.oyPct * rect.height;
+          // reposiciona a posição atual para não pular bruscamente
+          b.x = b.ox;
+          b.y = b.oy;
+          b.el.style.position = 'absolute';
+          b.el.style.left = '0px';
+          b.el.style.top = '0px';
+          b.el.style.transform = `translate3d(${b.x - b.size/2}px, ${b.y - b.size/2}px, 0)`;
         });
-      };
+      }
 
-      document.addEventListener('mousemove', e => onMove(e.clientX, e.clientY), {passive:true});
-      document.addEventListener('touchmove', e => {
-        if(e.touches && e.touches[0]) onMove(e.touches[0].clientX, e.touches[0].clientY);
-      }, {passive:true});
-
+      // recalcula posições quando redimensionar ou zoom
+      let resizeTimer = null;
+      function onResize(){
+        const rect = bg.getBoundingClientRect();
+        blobs.forEach(b => {
+          // atualiza ox/oy em px a partir das porcentagens
+          b.ox = rect.left + b.oxPct * rect.width;
+          b.oy = rect.top + b.oyPct * rect.height;
+        });
+        placeInitial();
+      }
       window.addEventListener('resize', () => {
-        blobs.forEach(blob => {
-          const x = Math.random() * window.innerWidth;
-          const y = Math.random() * window.innerHeight;
-          blob.style.left = x + 'px';
-          blob.style.top = y + 'px';
-          blob.dataset.ox = x;
-          blob.dataset.oy = y;
-        });
+        if(resizeTimer) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(onResize, 120);
+      });
+
+      // Detecta zoom via mudança de devicePixelRatio
+      let lastDPR = window.devicePixelRatio;
+      setInterval(() => {
+        const dpr = window.devicePixelRatio;
+        if(dpr !== lastDPR){
+          lastDPR = dpr;
+          onResize();
+        }
+      }, 300);
+
+      // Detecta zoom via Ctrl + roda do mouse (comum em navegadores desktop)
+      window.addEventListener('wheel', (e) => {
+        if(e.ctrlKey){
+          if(resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(onResize, 80);
+        }
       }, {passive:true});
+
+      // iOS Safari gesture events (quando suportado)
+      window.addEventListener('gesturechange', () => {
+        if(resizeTimer) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(onResize, 80);
+      });
+
+      // também recalcula ao rolar (caso o bg esteja posicionado relativo à viewport)
+      window.addEventListener('scroll', () => {
+        if(resizeTimer) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(onResize, 80);
+      }, {passive:true});
+
+      // inicial
+      placeInitial();
+      requestAnimationFrame(animate);
     }
   </script>
 </body>
