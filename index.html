@@ -81,7 +81,7 @@
     .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 12px;box-sizing:border-box;}
     .card{width:100%;max-width:920px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);position:relative;box-sizing:border-box;z-index:2;}
 
-    .logo{display:block;margin:0 auto 2px;max-width:250px;}
+    .logo{display:block;margin:0 auto 2px;max-width:350px;}
     h1{font-size:1.1rem;margin:0 0 12px;text-align:center;}
     label{display:block;margin-top:12px;font-weight:600;font-size:0.95rem;}
     button { min-height: var(--touch-size); display:inline-flex; align-items:center; justify-content:center; gap:8px; }
@@ -222,26 +222,46 @@
         <label for="vendedor">Vendedor</label>
         <select id="vendedor" name="vendedor" required>
           <option value="" disabled selected>Selecione o vendedor</option>
+          <option>Alexandre</option>
+          <option>Celso</option>
+          <option>Diego</option>
+          <option>Fabio</option>
+          <option>Felipe</option>
+          <option>Fernanda</option>
           <option>Inaiá</option>
+          <option>Luiz Felipe</option>
+          <option>Mariana</option>
           <option>Nikolas</option>
           <option>Patrícia</option>
-          <option>Felipe</option>
-          <option>Celso</option>
+          <option>Sarah</option>
+          <option>Tamires</option>
+          <option>Viviane</option>
         </select>
 
         <label for="cidade">Cidade</label>
         <select id="cidade" name="cidade" required>
           <option value="" disabled selected>Selecione a Cidade</option>
-          <option>Taubaté</option>
-          <option>São Sebastião</option>
+          <option>Aparecida</option>
+          <option>Guaratinguetá</option>
           <option>Lorena</option>
+          <option>Santo Antônio do Pinhal</option>
+          <option>São Bento do Sapucaí</option>
+          <option>São José dos Campos</option>
+          <option>Taubaté</option>
+          <option>Ubatuba</option>
         </select>
 
         <label for="proposta">Proposta comercial</label>
         <select id="proposta" name="proposta" required>
           <option value="" disabled selected>Proposta comercial</option>
-          <option>Allianz</option>
+          <option>ALLIANZ</option>
           <option>Yelum</option>
+          </option></option>
+          </option></option>
+          </option></option>
+          </option></option>
+          </option></option>
+          </option></option>
         </select>
 
         <div class="grid-2">
@@ -484,6 +504,25 @@
 
       const hoje = new Date().toISOString().split('T')[0];
       validadeOrcamento.setAttribute('min', hoje);
+
+      segurado.addEventListener('input', e => {
+         let valor = e.target.value;
+
+         valor = valor.replace(/[0-9]/g, '');     
+         valor = valor.replace(/[^a-zA-ZÀ-ÿ\s]/g, '');
+
+  e.target.value = valor.toUpperCase();
+});
+
+ condutor2.addEventListener('input', e => {
+         let valor = e.target.value;
+
+         valor = valor.replace(/[0-9]/g, '');     
+         valor = valor.replace(/[^a-zA-ZÀ-ÿ\s]/g, '');
+
+  
+  e.target.value = valor.toUpperCase();
+});
 
       placa.addEventListener('input', e => e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,7), {passive:true});
       ano.addEventListener('input', e => e.target.value = e.target.value.replace(/[^0-9]/g,'').slice(0,4), {passive:true});
@@ -1116,11 +1155,8 @@
 
         const blob = await res.blob();
 
-        const cd = res.headers.get('Content-Disposition') || '';
-        let filename = 'contrato.pdf';
-        const match = cd.match(/filename="?([^"]+)"?/);
-        if(match) filename = match[1];
-
+        let filename = `Papel Timbrado - ${segurado.value}.pdf`;
+        
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -1170,8 +1206,8 @@
       const smallScreen = window.innerWidth < 720;
       if(isTouch || smallScreen) return;
 
-      const COUNT = 45;
-      const MIN_SIZE = 80;
+      const COUNT = 50;
+      const MIN_SIZE = 50;
       const MAX_SIZE = 200;
       const BASE_ALPHA = 0.08;
       const REPULSE_RADIUS = 460;
