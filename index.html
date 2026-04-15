@@ -324,18 +324,18 @@
           <label for="coberturaSelect">Coberturas</label>
           <select id="coberturaSelect">
             <option value="" disabled selected>Escolha uma cobertura</option>
-            <option value="Percentual Tabela FIPE">FIPE</option>
-            <option value="Roubo/Furto">Roubo/Furto</option>
-            <option value="Perda Total">Perda Total</option>
-            <option value="Compreensiva">Compreensiva</option>
-            <option value="RCFV">RCFV</option>
-            <option value="Danos Morais">Danos Morais</option>
-            <option value="Acidentes pessoais morte/invalidez">Acidentes pessoais morte/invalidez</option>
-            <option value="Danos Materiais">Danos Materiais</option>
-            <option value="Danos Corporais">Danos Corporais</option>
-            <option value="Custo de Defesa">Custo de Defesa</option>
-            <option value="Despesa Extraordinária">Despesa Extraordinária</option>
+           <option value="Acidentes pessoais morte/invalidez">Acidentes pessoais morte/invalidez</option>
             <option value="Carro Reserva">Carro Reserva</option>
+            <option value="Compreensiva">Compreensiva</option>
+            <option value="Custo de Defesa">Custo de Defesa</option>
+            <option value="Danos Corporais">Danos Corporais</option>
+            <option value="Danos Materiais">Danos Materiais</option>
+            <option value="Danos Morais">Danos Morais</option>
+            <option value="Despesa Extraordinária">Despesa Extraordinária</option>
+            <option value="Percentual Tabela FIPE">FIPE</option>
+            <option value="Perda Total">Perda Total</option>
+            <option value="RCFV">RCFV</option>
+            <option value="Roubo/Furto">Roubo/Furto</option>
           </select>
 
           <div class="badges" id="coberturasSelecionadas">
@@ -348,9 +348,9 @@
           <label for="assistenciaSelect">Assistências</label>
           <select id="assistenciaSelect">
             <option value="" disabled selected>Escolha uma assistência</option>
-            <option value="Martelinho de ouro">Martelinho de ouro</option>
-            <option value="Pequenos Reparos">Pequenos Reparos</option>
-            <option value="Parachoque/Pintura">Parachoque/Pintura</option>
+          <option value="Martelinho de ouro">Martelinho de ouro</option>
+          <option value="Parachoque/Pintura">Parachoque/Pintura</option>
+          <option value="Pequenos Reparos">Pequenos Reparos</option>
           </select>
 
           <div class="badges" id="assistenciasSelecionadas">
@@ -363,12 +363,12 @@
           <label for="vidrosSelect">Assistência de Vidros</label>
           <select id="vidrosSelect">
             <option value="" disabled selected>Escolha uma opção</option>
-            <option value="Para-brisa">Para-brisa</option>
-            <option value="Laterais">Laterais</option>
-            <option value="Traseiro">Traseiro</option>
             <option value="Farol">Farol</option>
             <option value="Lanterna">Lanterna</option>
+            <option value="Laterais">Laterais</option>
+            <option value="Para-brisa">Para-brisa</option>
             <option value="Retrovisores">Retrovisores</option>
+            <option value="Traseiro">Traseiro</option>
           </select>
           <div id="vidrosSelecionados"></div>
         </div>
@@ -639,8 +639,8 @@
       simples: ['Roubo/Furto','Perda Total','Compreensiva'],
       complexas: ['Danos Morais','Danos Materiais','RCFV','Percentual Tabela FIPE','Acidentes pessoais morte/invalidez','Danos Corporais','Custo de Defesa','Despesa Extraordinária'],
       carroReserva: 'Carro Reserva',
-      pares: [['Danos Materiais','Danos Corporais']]
-    };
+     };
+
 
     coberturaSelect.addEventListener('change', () => {
       const v = coberturaSelect.value;
@@ -816,10 +816,10 @@
       selectServico.innerHTML = `
         <option value="" disabled selected>Escolha um serviço</option>
         <option value="Guincho">Guincho</option>
-        <option value="Troca de Pneus">Troca de Pneus</option>
-        <option value="Pane Seca">Pane Seca</option>
         <option value="Chaveiro">Chaveiro</option>
+        <option value="Pane Seca">Pane Seca</option>
         <option value="Taxi">Taxi</option>
+        <option value="Troca de Pneus">Troca de Pneus</option>
       `;
 
       const simplesContainer24h = document.createElement('div');
@@ -994,25 +994,48 @@
     }
 
     function validarObrigatorios(){
-      const obrigatorios = [vendedor,cidade,proposta,segurado,modelo,ano,placa,franquia,valorTotal,formaPagamento,validadeOrcamento];
-      for(const el of obrigatorios){
-        if(!el || !el.value){
-          el.style.border = '2px solid #e11d48';
-          el.style.boxShadow = '0 0 0 3px rgba(225,29,72,0.12)';
-          el.focus();
-          return false;
-        }
-      }
-      if(formaPagamento.value === 'credito'){
-        if(!parcelas || !parcelas.value){
-          parcelas.style.border = '2px solid #e11d48';
-          parcelas.style.boxShadow = '0 0 0 3px rgba(225,29,72,0.12)';
-          parcelas.focus();
-          return false;
-        }
-      }
-      return true;
+  const obrigatorios = [vendedor,cidade,proposta,segurado,modelo,ano,placa,franquia,valorTotal,formaPagamento,validadeOrcamento];
+
+  for(const el of obrigatorios){
+    if(!el || !el.value){
+      el.style.border = '2px solid #e11d48';
+      el.style.boxShadow = '0 0 0 3px rgba(225,29,72,0.12)';
+      el.focus();
+      return false;
     }
+  }
+
+  if(formaPagamento.value === 'credito'){
+    if(!parcelas || !parcelas.value){
+      parcelas.style.border = '2px solid #e11d48';
+      parcelas.style.boxShadow = '0 0 0 3px rgba(225,29,72,0.12)';
+      parcelas.focus();
+      return false;
+    }
+
+    const valorParcela = document.querySelector('#parcelaValorUnico');
+
+    if(!valorParcela){
+      alert('Selecione as parcelas');
+      return false;
+    }
+
+    const somenteNumeros = valorParcela.value.replace(/\D/g, '');
+
+    if(somenteNumeros.length === 0){
+      valorParcela.style.border = '2px solid #e11d48';
+      valorParcela.style.boxShadow = '0 0 0 3px rgba(225,29,72,0.12)';
+      valorParcela.focus();
+      valorParcela.style.border = '2px solid #e11d48';
+      valorParcela.style.boxShadow = '0 0 0 3px rgba(225,29,72,0.12)';
+      valorParcela.focus();
+      return false;
+    }
+  }
+
+  return true;
+}
+
 
     function brlToNumber(brlString){
       if(!brlString) return null;
