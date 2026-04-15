@@ -329,19 +329,20 @@
         <div style="margin-top:12px;">
           <label for="coberturaSelect">Coberturas</label>
           <select id="coberturaSelect">
-            <option value="" disabled selected>Escolha uma cobertura</option>
-           <option value="Acidentes pessoais morte/invalidez">Acidentes pessoais morte/invalidez</option>
-            <option value="Carro Reserva">Carro Reserva</option>
+            <option value="" disabled selected>Escolha uma cobertura</option>                    
+            <option value="Perda Total">Perda Total</option>     
+            <option value="Roubo/Furto">Roubo/Furto</option>
             <option value="Compreensiva">Compreensiva</option>
+            <option value="RCFV">RCFV</option>
+            <option value="Acidentes pessoais morte/invalidez">Acidentes pessoais morte/invalidez</option>
             <option value="Custo de Defesa">Custo de Defesa</option>
             <option value="Danos Corporais">Danos Corporais</option>
             <option value="Danos Materiais">Danos Materiais</option>
             <option value="Danos Morais">Danos Morais</option>
             <option value="Despesa Extraordinária">Despesa Extraordinária</option>
             <option value="Percentual Tabela FIPE">FIPE</option>
-            <option value="Perda Total">Perda Total</option>
-            <option value="RCFV">RCFV</option>
-            <option value="Roubo/Furto">Roubo/Furto</option>
+            <option value="Carro Reserva">Carro Reserva</option>
+            
           </select>
 
           <div class="badges" id="coberturasSelecionadas">
@@ -371,10 +372,14 @@
             <option value="" disabled selected>Escolha uma opção</option>
             <option value="Farol">Farol</option>
             <option value="Lanterna">Lanterna</option>
-            <option value="Laterais">Laterais</option>
+            <option value="Vidro Lateral">Vidro Lateral</option>
             <option value="Para-brisa">Para-brisa</option>
             <option value="Retrovisores">Retrovisores</option>
-            <option value="Traseiro">Traseiro</option>
+            <option value="Milhas">Milhas</option>
+            <option value="Vidro Traseiro">Vidro Traseiro</option>
+            <option value="Teto Solar">Teto Solar</option>
+            <option value="Retrovisor Interno">Retrovisor Interno</option>
+            <option value="Retrovisor Externo">Retrovisor Externo</option>        
           </select>
           <div id="vidrosSelecionados"></div>
         </div>
@@ -660,6 +665,14 @@
       if(state.coberturasEscolhidas.has(v)) return;
       state.coberturasEscolhidas.add(v);
 
+      // Auto selecionar FIPE
+        if (
+          ['Roubo/Furto', 'Perda Total', 'Compreensiva'].includes(v) &&
+          !state.coberturasEscolhidas.has('Percentual Tabela FIPE')
+        ) {
+          addCobertura('Percentual Tabela FIPE');
+        }
+
       removeOptionFromSelect(coberturaSelect, v);
 
       const wrapper = document.createElement('div');
@@ -756,7 +769,17 @@
       const badge = createBadge(v, v);
       wrapper.appendChild(badge);
       if(v === 'Assistencia de Vidros'){
-        const itens = ['Para-brisa','Laterais','Traseiro','Farol','Lanterna','Retrovisores'];
+        const itens = [
+          'Farol',
+          'Lanterna',
+          'Milhas',
+          'Para-brisa',
+          'Vidro traseiro',
+          'Vidro lateral',
+          'Teto solar',
+          'Retrovisor interno',
+          'Retrovisor externo'
+        ];
         const container = document.createElement('div');
         container.style.display = 'flex';
         container.style.flexDirection = 'column';
@@ -1414,4 +1437,3 @@
   </script>
 </body>
 </html>
-
