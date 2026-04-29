@@ -307,7 +307,7 @@
           <select id="formaPagamento" name="formaPagamento" required>
             <option value="" disabled selected>Selecione</option>
             <option value="credito">Cartão de Crédito</option>
-            <option value="debito">Cartão de Débito</option>
+            <option value="debito">Débito em Conta</option>
             <option value="boleto">Boleto</option>
             <option value="pix">Pix</option>
           </select>
@@ -367,20 +367,8 @@
         </div>
 
         <div style="margin-top:12px;">
-          <label for="vidrosSelect">Assistência de Vidros</label>
-          <select id="vidrosSelect">
-            <option value="" disabled selected>Escolha uma opção</option>
-            <option value="Farol">Farol</option>
-            <option value="Lanterna">Lanterna</option>
-            <option value="Vidro Lateral">Vidro Lateral</option>
-            <option value="Para-brisa">Para-brisa</option>          
-            <option value="Farol Auxiliar">Farol Auxiliar</option>
-            <option value="Vidro Traseiro">Vidro Traseiro</option>
-            <option value="Teto Solar">Teto Solar</option>
-            <option value="Retrovisor Interno">Retrovisor Interno</option>
-            <option value="Retrovisor Externo">Retrovisor Externo</option>        
-          </select>
-          <div id="vidrosSelecionados"></div>
+          <label for="vidrosInput">Assistência de Vidros</label>
+          <input id="vidrosInput" name="vidrosInput" type="text" placeholder="Digite os vidros (ex: Para-brisa, Vidro Lateral, Teto Solar)" />
         </div>
 
         <div style="margin-top:12px;">
@@ -443,8 +431,7 @@
     const assistenciaSelect = $('#assistenciaSelect');
     const simplesAssistenciasContainer = $('#simplesAssistenciasContainer');
     const complexasAssistenciasContainer = $('#complexasAssistenciasContainer');
-    const vidrosSelect = $('#vidrosSelect');
-    const vidrosSelecionados = $('#vidrosSelecionados');
+    const vidrosInput = $('#vidrosInput');
     const assistencia24hContainer = $('#assistencia24hContainer');
     const observacoes = $('#observacoes');
     const btnEnviar = $('#btnEnviar');
@@ -455,14 +442,12 @@
 
     const state = {
       coberturasEscolhidas: new Set(),
-      assistenciasEscolhidas: new Set(),
-      vidrosEscolhidos: new Set()
+      assistenciasEscolhidas: new Set()
     };
 
     const originalOptions = {
       cobertura: [],
       assistencia: [],
-      vidros: [],
       servicos24h: []
     };
 
@@ -485,9 +470,6 @@
       }
       if(assistenciaSelect){
         originalOptions.assistencia = Array.from(assistenciaSelect.querySelectorAll('option')).map((o,i)=>({value:o.value, text:o.text, index:i, disabled:o.disabled}));
-      }
-      if(vidrosSelect){
-        originalOptions.vidros = Array.from(vidrosSelect.querySelectorAll('option')).map((o,i)=>({value:o.value, text:o.text, index:i, disabled:o.disabled}));
       }
 
       originalOptions.servicos24h = [
@@ -547,7 +529,7 @@
       }, {passive:false});
 
       formaPagamento.addEventListener('change', () => {
-        if(formaPagamento.value === 'credito') {
+        if(formaPagamento.value === 'credito' || formaPagamento.value === 'debito') {
           parcelasContainer.style.display = 'block';
         }
         else { 
@@ -816,25 +798,6 @@
       addOptionToSelect(assistenciaSelect, v, originalOptions.assistencia);
     }
 
-    vidrosSelect.addEventListener('change', () => {
-      const v = vidrosSelect.value;
-      if(!v) return;
-      if(state.vidrosEscolhidos.has(v)) { vidrosSelect.value = ''; return; }
-      state.vidrosEscolhidos.add(v);
-
-      removeOptionFromSelect(vidrosSelect, v);
-
-      const badge = createBadge(v, v);
-      badge.addEventListener('click', () => {
-        state.vidrosEscolhidos.delete(v);
-        badge.remove();
-        addOptionToSelect(vidrosSelect, v, originalOptions.vidros);
-      }, {passive:true});
-
-      vidrosSelecionados.appendChild(badge);
-      vidrosSelect.value = '';
-    });
-
     function buildAssistencia24h(){
       const container = document.createElement('div');
       container.style.marginTop = '6px';
@@ -1033,7 +996,7 @@
     }
   }
 
-  if(formaPagamento.value === 'credito'){
+  if(formaPagamento.value === 'credito' || formaPagamento.value === 'debito'){
     if(!parcelas || !parcelas.value){
       parcelas.style.border = '2px solid #e11d48';
       parcelas.style.boxShadow = '0 0 0 3px rgba(225,29,72,0.12)';
@@ -1128,13 +1091,8 @@
     }
 
     function buildVidrosPayload(){
-      const arr = [];
-      const badges = document.querySelectorAll('#vidrosSelecionados .badge');
-      badges.forEach(b => {
-        const nome = b.dataset.valor || b.textContent.replace(' ✖','').trim();
-        arr.push(nome);
-      });
-      return arr;
+      const input = vidrosInput.value.trim();
+      return input ? input : null;
     }
 
     function buildAssistencia24hPayload(){
