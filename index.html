@@ -704,9 +704,16 @@
           selectTipo.style.minWidth = '140px';
 
           const inputDias = document.createElement('input');
-          inputDias.type = 'text';
+          inputDias.type = 'number';
           inputDias.placeholder = 'Dias';
+          inputDias.min = '1';
+          inputDias.step = '1';
+          inputDias.inputMode = 'numeric';
           inputDias.style.width = '90px';
+
+          inputDias.addEventListener('input', e => {
+            e.target.value = e.target.value.replace(/\D/g,'');
+          }, {passive:false});
 
           wrapper.appendChild(selectTipo);
           wrapper.appendChild(inputDias);
@@ -1049,7 +1056,9 @@
         }
         const selectTipo = w.querySelector('select');
         if(selectTipo && selectTipo.value) obj.tipo = selectTipo.value;
-        const inputDias = w.querySelector('input[type="number"]');
+        const inputDias = nome === COBERTURAS.carroReserva
+          ? w.querySelector('input[placeholder="Dias"]')
+          : w.querySelector('input[type="number"]');
         if(inputDias && inputDias.value) {
           if(nome === 'Percentual Tabela FIPE') {
             obj.percentual = inputDias.value;
